@@ -1,17 +1,53 @@
 using System;
+using UnityEngine;
 
 namespace Tetris.Models
 {
     public class Figure
     {
-        public Figure(Shape shape)
-        {
-            if (shape == null)
-                throw new ArgumentNullException(nameof(shape));
+        private readonly Shape[] _shapes;
+        private int _index;
 
-            Shape = shape;
+        public Figure(Shape[] shapes, int id)
+        {
+            if (shapes == null)
+                throw new ArgumentNullException(nameof(shapes));
+
+            _shapes = shapes;
+            Id = id;
         }
 
-        public Shape Shape { get; private set; }
+        public event Action ShapeChanged;
+
+        public int Id { get; private set; }
+
+        public Vector2Int[] Cells => _shapes[_index].Cells;
+
+        public void ChangeShape(int direction)
+        {
+            if (direction == 0)
+                throw new ArgumentOutOfRangeException(nameof(direction));
+
+            _index = Repeat(_index + direction, _shapes.Length);
+
+            ShapeChanged?.Invoke();
+        }
+
+        public Vector2Int[] GetShape(int direction)
+        {
+            int index = Repeat(_index + direction, _shapes.Length);            
+
+            return _shapes[index].Cells;
+        }
+
+        private int Repeat(int value, int length)
+        {
+            if (value >= length)
+                return 0;
+            else if (value < 0)
+                return length - 1;
+
+            return value;
+        }
     }
 }

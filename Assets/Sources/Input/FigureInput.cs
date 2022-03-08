@@ -81,8 +81,52 @@ public class @FigureInput : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""13ffcd23-5e92-430e-82be-d4fe21d8653a"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""977c7a73-4e28-4832-9ba2-519933105ba4"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""38f515e9-fe08-41d9-9dc1-7afbd62c2f64"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""c7cf0dda-247b-4705-b44e-8470dc032839"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": ""1D Axis"",
-                    ""id"": ""684fcb92-8647-44b4-af80-c44883e1c419"",
+                    ""id"": ""f6c2f623-8165-41f3-bb12-178a293878bb"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -93,8 +137,8 @@ public class @FigureInput : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""negative"",
-                    ""id"": ""3f08220e-6131-4088-8af5-d1b9e2a48c84"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""id"": ""568a5000-8a74-4d58-a052-fc8479ef5dcd"",
+                    ""path"": ""<Keyboard>/numpad1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -104,8 +148,41 @@ public class @FigureInput : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""positive"",
-                    ""id"": ""4a18defa-aa83-40fc-94a2-2333eec324f5"",
-                    ""path"": ""<Keyboard>/2"",
+                    ""id"": ""427f3689-e691-46f0-9d5f-c2ce327f824f"",
+                    ""path"": ""<Keyboard>/numpad2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""85a0fc9e-1eb9-41e7-89b6-72df03f0c18c"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""8c510784-e530-49b5-8a13-7be12ff3183a"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""08d76331-3739-4c79-af8b-7fadb13d81ae"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

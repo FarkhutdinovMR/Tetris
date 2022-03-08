@@ -12,7 +12,10 @@ public class TransformableView : MonoBehaviour
 
     public void LateUpdate()
     {
-        transform.position = Transformable.Position;
+        if (Transformable == null)
+            return;
+
+        transform.position = new Vector2(Transformable.Position.x, Transformable.Position.y);
         transform.rotation = Quaternion.Euler(0, 0, Transformable.Rotation);
     }
 }

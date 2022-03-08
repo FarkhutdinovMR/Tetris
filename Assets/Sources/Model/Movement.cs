@@ -3,72 +3,75 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    public class Movement
+    public class Movement : ITransform
     {
-        private Shape _cup;
-        private Shape _figure;
-        private Transformable _figureTransformable;
+        private readonly Cup _cup;
+        private readonly Figure _figure;
+        private readonly Transformable _figureTransformable;
 
-        public Movement(Shape cup, Shape figure, Transformable figureTransformable)
+        public Movement(Figure figure, Transformable figureTransformable, Cup cup)
         {
-            if (cup == null)
-                throw new ArgumentNullException(nameof(cup));
-
             if (figure == null)
                 throw new ArgumentNullException(nameof(figure));
 
             if (figureTransformable == null)
                 throw new ArgumentNullException(nameof(figureTransformable));
 
-            _cup = cup;
+            if (cup == null)
+                throw new ArgumentNullException(nameof(cup));
+
             _figure = figure;
             _figureTransformable = figureTransformable;
-            Enable();
+            _cup = cup;
         }
 
-        public void Enable()
+        public void Move(Vector2Int direction)
         {
-            _figureTransformable.Moved += OnMoved;
-        }
-
-        public void Disable()
-        {
-            _figureTransformable.Moved -= OnMoved;
-        }
-
-        private void OnMoved()
-        {
-            TryMove();
-        }
-
-        private void TryMove()
-        {
-            for (int i = 0; i < _figure.Width; i++)
+            foreach(Vector2Int position in _figure.Cells)
             {
-                for (int j = 0; j < _figure.Height; j++)
+                Vector2Int currentPosition = _figureTransformable.Position + position;
+                Vector2Int nextPosition = currentPosition + direction;
+
+                if (nextPosition.x < 0 || nextPosition.x >= _cup.Width)
+                    return;
+
+                if (nextPosition.y < 0)
                 {
-                    if (_figure.IsEmpty(j, i))
-                        continue;
+                    _cup.Edit(_figure.Cells, _figureTransformable.Position);
+                    return;
+                }
 
-                    Vector2 worldIndex = _figureTransformable.Position + new Vector2(j, i);
+                if (_cup.IsEmpty(nextPosition) == false)
+                {
+                    if (currentPosition.y - nextPosition.y == 1)
+                        _cup.Edit(_figure.Cells, _figureTransformable.Position);
 
-                    if (_cup.CheckIndexExist((int)worldIndex.x, (int)worldIndex.y) == false)
-                    {
-                        _figureTransformable.Stop();
-                        Debug.Log("ArgumentOutOfRange");
-                        Disable();
-                        return;
-                    }
-
-                    if (_cup.IsEmpty((int)worldIndex.x, (int)worldIndex.y) == false)
-                    {
-                        _figureTransformable.Stop();
-                        Debug.Log("CellIsNotEmpty");
-                        Disable();
-                        return;
-                    }
+                    return;
                 }
             }
+
+            _figureTransformable.Move(direction);
+        }
+
+        public void Rotate(int direction)
+        {
+            Vector2Int[] cells = _figure.GetShape(direction);
+
+            foreach (Vector2Int position in cells)
+            {
+                Vector2Int currentPosition = _figureTransformable.Position + position;
+
+                if (currentPosition.x < 0 || currentPosition.x >= _cup.Width)
+                    return;
+
+                if (currentPosition.y < 0)
+                    return;
+
+                if (_cup.IsEmpty(currentPosition) == false)
+                    return;
+            }
+
+            _figure.ChangeShape(direction);
         }
     }
 }

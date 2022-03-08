@@ -1,38 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Tetris.Models
 {
-    public class Transformable
+    public class Transformable : ITransform
     {
-        private bool _isActive;
-
-        public Transformable(Vector2 position, float rotation)
+        public Transformable(Vector2Int position, float rotation)
         {
             Position = position;
             Rotation = rotation;
-            _isActive = true;
         }
 
-        public event Action Moved;
-
-        public Vector2 Position { get; private set; }
+        public Vector2Int Position { get; private set; }
 
         public float Rotation { get; private set; }
 
-        public void Translate(Vector2 position)
+        public void Move(Vector2Int position)
         {
-            if (_isActive == false)
-                return;
-
             Position += position;
-
-            Moved?.Invoke();
         }
 
-        public void Stop()
-        {
-            _isActive = false;
-        }
+        public void Rotate(int direction) { }
     }
 }

@@ -5,12 +5,14 @@ namespace CompositeRoot
 {
     public class CupCompositeRoot : CompositeRoot
     {
-        private Cup _cup;
+        [SerializeField] private CupView _cupView;
+
+        public Cup Cup { get; private set; }
 
         public override void Compose()
         {
-            var map = new bool[10, 20];
-            _cup = new Cup(new Shape(map));
+            Cup = new Cup(new bool[10, 22]);
+            _cupView.Init(Cup);
         }
     }
 }
