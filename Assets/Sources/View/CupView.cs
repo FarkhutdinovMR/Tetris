@@ -6,7 +6,7 @@ public class CupView : MonoBehaviour
 {
     [SerializeField] private GameObject _cellTemplate;
 
-    private Cup _cup;
+    private ICup _cup;
     private GameObject[,] _cells;
 
     public void Init(Cup cup)
@@ -15,14 +15,14 @@ public class CupView : MonoBehaviour
             throw new ArgumentNullException(nameof(cup));
 
         _cup = cup;
-        _cup.Changed += OnChanged;
+        _cup.CellChanged += OnChanged;
         _cells = new GameObject[_cup.Width, _cup.Height];
         CreateCup();
     }
 
     private void OnDisable()
     {
-        _cup.Changed -= OnChanged;
+        _cup.CellChanged -= OnChanged;
     }
 
     private void CreateCup()

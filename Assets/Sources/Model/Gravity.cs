@@ -5,11 +5,11 @@ namespace Tetris.Models
 {
     public class Gravity
     {
-        private readonly ITransform _transform;
+        private readonly IMovement _transform;
         private readonly float _delay;
         private float _runningTime;
 
-        public Gravity(ITransform transform, float delay)
+        public Gravity(IMovement transform, float delay)
         {
             if (transform == null)
                 throw new ArgumentNullException(nameof(transform));
@@ -27,7 +27,7 @@ namespace Tetris.Models
 
             if (_runningTime > 1f / _delay)
             {
-                _transform.Move(Vector2Int.down);
+                _transform.TryMove(Vector2Int.down);
 
                 _runningTime = 0;
             }

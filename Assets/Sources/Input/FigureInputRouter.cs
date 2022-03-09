@@ -7,9 +7,9 @@ public class FigureInputRouter
 {
     private readonly FigureInput _figureInput;
     private readonly Timer _moveTimer;
-    private ITransform _transform;
+    private IMovement _transform;
 
-    public FigureInputRouter(ITransform transform)
+    public FigureInputRouter(IMovement transform)
     {
         if (transform == null)
             throw new ArgumentNullException(nameof(transform));
@@ -19,7 +19,7 @@ public class FigureInputRouter
         _moveTimer = new Timer(() => MoveFigure(_figureInput.Figure.Move.ReadValue<Vector2>()), 0.1f);
     }
 
-    public void Enable()
+    public void OnEnable()
     {
         _figureInput.Enable();
         _figureInput.Figure.Move.started += OnMoveStarted;
@@ -27,7 +27,7 @@ public class FigureInputRouter
         _figureInput.Figure.Rotate.performed += OnRotate;
     }
 
-    public void Disable()
+    public void OnDisable()
     {
         _figureInput.Disable();
         _figureInput.Figure.Move.started -= OnMoveStarted;
@@ -57,12 +57,12 @@ public class FigureInputRouter
 
     private void MoveFigure(Vector2 direction)
     {
-        _transform.Move(Vector2Int.RoundToInt(direction));
+        _transform.TryMove(Vector2Int.RoundToInt(direction));
     }
 
     private void RotateFigure(float direction)
     {
-        _transform.Rotate((int)direction);
+        _transform.TryRotate((int)direction);
     }
 
     private class Timer

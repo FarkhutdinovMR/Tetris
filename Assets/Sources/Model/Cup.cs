@@ -9,7 +9,18 @@ namespace Tetris.Models
         public event Action<int> LineDeleted;
     }
 
-    public class Cup : ILineRemover
+    public interface ICup
+    {
+        public bool[,] Cells { get; }
+
+        public int Width { get; }
+
+        public int Height { get; }
+
+        public event Action CellChanged;
+    }
+
+    public class Cup : ICup, ILineRemover
     {
         public Cup(bool[,] cells)
         {
@@ -19,11 +30,13 @@ namespace Tetris.Models
             Cells = cells;
         }
 
-        public event Action Changed;
+        public event Action CellChanged;
 
         public event Action<int> LineDeleted;
 
         public bool[,] Cells { get; private set; }
+
+        public IReadOnlyList<bool> f;
 
         public int Width => Cells.GetLength(0);
 
@@ -52,7 +65,7 @@ namespace Tetris.Models
             }
 
             DeleteLines();
-            Changed?.Invoke();
+            CellChanged?.Invoke();
         }
 
         public bool IsLine(int y)

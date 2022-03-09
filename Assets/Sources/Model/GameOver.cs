@@ -20,14 +20,14 @@ namespace Tetris.Models
 
             _cup = cup;
             _maxPosition = maxPosition;
-            _cup.Changed += OnChanged;
+            _cup.CellChanged += OnChanged;
         }
 
         public event Action Ended;
 
         public void OnDisable()
         {
-            _cup.Changed -= OnChanged;
+            _cup.CellChanged -= OnChanged;
         }
 
         private void OnChanged()
@@ -46,7 +46,7 @@ namespace Tetris.Models
                 {
                     _isEndGame = true;
                     Ended?.Invoke();
-                    _cup.Changed -= OnChanged;
+                    _cup.CellChanged -= OnChanged;
                     return;
                 }
             }

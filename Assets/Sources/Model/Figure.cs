@@ -35,9 +35,7 @@ namespace Tetris.Models
 
         public Vector2Int[] GetShape(int direction)
         {
-            int index = Repeat(_index + direction, _shapes.Length);            
-
-            return _shapes[index].Cells;
+            return _shapes[Repeat(_index + direction, _shapes.Length)].Cells;
         }
 
         private int Repeat(int value, int length)

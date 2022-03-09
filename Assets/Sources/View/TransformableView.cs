@@ -3,19 +3,15 @@ using Tetris.Models;
 
 public class TransformableView : MonoBehaviour
 {
-    public Transformable Transformable { get; private set; }
+    private Transformable _transformable;
 
     public void Init(Transformable transformable)
     {
-        Transformable = transformable;
+        _transformable = transformable;
     }
 
     public void LateUpdate()
     {
-        if (Transformable == null)
-            return;
-
-        transform.position = new Vector2(Transformable.Position.x, Transformable.Position.y);
-        transform.rotation = Quaternion.Euler(0, 0, Transformable.Rotation);
+        transform.position = new Vector2(_transformable.Position.x, _transformable.Position.y);
     }
 }
