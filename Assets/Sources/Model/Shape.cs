@@ -1,14 +1,21 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Tetris.Models
 {
     public class Shape
     {
-        public Shape(Vector2Int[] position)
+        private readonly Dictionary<Vector2Int, Cell> _cells;
+
+        public Shape(Dictionary<Vector2Int, Cell> cells)
         {
-            Cells = position;
+            if (cells == null)
+                throw new ArgumentNullException(nameof(cells));
+
+            _cells = cells;
         }
 
-        public Vector2Int[] Cells { get; private set; }
+        public Dictionary<Vector2Int, Cell> Cells => _cells;
     }
 }

@@ -6,13 +6,26 @@ namespace CompositeRoot
     public class CupCompositeRoot : CompositeRoot
     {
         [SerializeField] private CupView _cupView;
+        [SerializeField] private int _width;
+        [SerializeField] private int _height;
 
-        public Cup Cup { get; private set; }
+        private Cup _cup;
 
         public override void Compose()
         {
-            Cup = new Cup(new bool[10, 22]);
-            _cupView.Init(Cup);
+            _cup = new Cup(_width, _height);
+        }
+
+        public Cup Cup => _cup;
+
+        private void OnEnable()
+        {
+            _cup.CellsChanged += _cupView.Render;
+        }
+
+        private void OnDisable()
+        {
+            _cup.CellsChanged -= _cupView.Render;
         }
     }
 }

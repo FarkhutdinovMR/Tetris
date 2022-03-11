@@ -4,16 +4,18 @@ namespace Tetris.Models
 {
     public class Transformable
     {
+        private Vector2Int _position;
+
         public Transformable(Vector2Int position)
         {
-            Position = position;
+            _position = position;
         }
 
-        public Vector2Int Position { get; private set; }
+        public Vector2Int Position => _position;
 
         public void Move(Vector2Int position)
         {
-            Position += position;
+            _position += position;
         }
     }
 }

@@ -7,17 +7,24 @@ namespace CompositeRoot
     {
         [SerializeField] private CupCompositeRoot _cupCompositeRoot;
         [SerializeField] private GameObject _gameOverWindow;
+        [SerializeField] private int _maxPosition;
 
         private GameOver _gameOver;
 
         public override void Compose()
         {
-            _gameOver = new GameOver(_cupCompositeRoot.Cup, 19);
+            _gameOver = new GameOver(_maxPosition);
+        }
+
+        private void OnEnable()
+        {
+            _cupCompositeRoot.Cup.CellsChanged += _gameOver.StopGame;
             _gameOver.Ended += GameOver;
         }
 
-        public void OnDisable()
+        private void OnDisable()
         {
+            _cupCompositeRoot.Cup.CellsChanged -= _gameOver.StopGame;
             _gameOver.Ended -= GameOver;
         }
 
