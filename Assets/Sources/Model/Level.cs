@@ -4,51 +4,35 @@ namespace Tetris.Models
 {
     public class Level
     {
-        private readonly Statistics _statistics;
         private readonly int _lineToLevelUp;
+        private int _value;
 
-        public Level(Statistics statistics, int lineToLevelUp)
+        public Level(int lineToLevelUp)
         {
-            if (statistics == null)
-                throw new ArgumentNullException(nameof(statistics));
-
             if (lineToLevelUp <= 0)
                 throw new ArgumentOutOfRangeException(nameof(lineToLevelUp));
 
-            _statistics = statistics;
             _lineToLevelUp = lineToLevelUp;
-            Value = 1;
+            _value = 1;
         }
 
-        public int Value { get; private set; }
+        public int Value => _value;
 
         public event Action<int> Changed;
 
-        public void OnEnable()
+        public void Update(int line)
         {
-            _statistics.ValueChanged += OnValueChanged;
-        }
+            if (line < 0)
+                throw new ArgumentOutOfRangeException(nameof(line));
 
-        public void OnDisable()
-        {
-            _statistics.ValueChanged -= OnValueChanged;
-        }
-
-        private void OnValueChanged(int score, int line)
-        {
-            Calculate(line);
-        }
-
-        private void Calculate(int line)
-        {
-            if (line >= _lineToLevelUp * Value)
+            if (line >= _lineToLevelUp * _value)
                 Up();
         }
 
         private void Up()
         {
-            Value++;
-            Changed?.Invoke(Value);
+            _value++;
+            Changed?.Invoke(_value);
         }
     }
 }

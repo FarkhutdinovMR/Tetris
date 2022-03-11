@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Tetris.Models
 {
     public class Movement : IMovement
     {
-        private readonly Cup _cup;
         private readonly Figure _figure;
         private readonly Transformable _transformable;
+        private readonly Cup _cup;
 
         public Movement(Figure figure, Transformable transformable, Cup cup)
         {
@@ -27,7 +28,7 @@ namespace Tetris.Models
 
         public void TryMove(Vector2Int direction)
         {
-            foreach(Vector2Int position in _figure.Cells)
+            foreach(Vector2Int position in _figure.Cells.Keys)
             {
                 Vector2Int currentPosition = _transformable.Position + position;
                 Vector2Int nextPosition = currentPosition + direction;
@@ -37,14 +38,14 @@ namespace Tetris.Models
 
                 if (nextPosition.y < 0)
                 {
-                    _cup.Edit(_figure.Cells, _transformable.Position);
+                    _cup.AddCells(_figure.Cells, _transformable.Position);
                     return;
                 }
 
-                if (_cup.IsEmpty(nextPosition) == false)
+                if (_cup.ContainCell(nextPosition))
                 {
                     if (currentPosition.y - nextPosition.y == 1)
-                        _cup.Edit(_figure.Cells, _transformable.Position);
+                        _cup.AddCells(_figure.Cells, _transformable.Position);
 
                     return;
                 }
@@ -55,19 +56,15 @@ namespace Tetris.Models
 
         public void TryRotate(int direction)
         {
-            Vector2Int[] cells = _figure.GetShape(direction);
+            Dictionary<Vector2Int, Cell> cells = _figure.GetShape(direction);
 
-            foreach (Vector2Int position in cells)
+            foreach (Vector2Int position in cells.Keys)
             {
                 Vector2Int currentPosition = _transformable.Position + position;
 
-                if (currentPosition.x < 0 || currentPosition.x >= _cup.Width)
-                    return;
-
-                if (currentPosition.y < 0)
-                    return;
-
-                if (_cup.IsEmpty(currentPosition) == false)
+                if ((currentPosition.x < 0 || currentPosition.x >= _cup.Width) ||
+                    (currentPosition.y < 0) ||
+                    (_cup.ContainCell(currentPosition)))
                     return;
             }
 

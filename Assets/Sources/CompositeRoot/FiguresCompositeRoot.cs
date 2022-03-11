@@ -8,26 +8,36 @@ namespace CompositeRoot
         [SerializeField] private CupCompositeRoot _cupCompositeRoot;
         [SerializeField] private LevelCompositeRoot _levelCompositeRoot;
         [SerializeField] private FiguresViewFactory _figuresViewFactory;
+        [SerializeField] private FigureView _nextFigureView;
 
+        private Figures _figures;
         private FigureSpawner _figureSpawner;
+        private NextFigure _nextFigure;
+
+        public Figures Figures => _figures;
+        public FigureSpawner FigureSpawner => _figureSpawner;
 
         public override void Compose()
         {
-            _figureSpawner = new FigureSpawner(_cupCompositeRoot.Cup, _levelCompositeRoot.Level.Value);
+            _figures = new Figures();
+            _nextFigure = new NextFigure(_figures);
+            _figureSpawner = new FigureSpawner(_cupCompositeRoot.Cup, _levelCompositeRoot.Level, _nextFigure);
         }
 
         private void OnEnable()
         {
-            _figureSpawner.OnEnable();
             _figureSpawner.FigureSpawned += OnFigureSpawned;
             _figureSpawner.FigureStopped += OnFigureStoped;
+            _cupCompositeRoot.Cup.CellsChanged += _figureSpawner.Start;
+            _nextFigure.FigureChanged += _nextFigureView.Show;
         }
 
         private void OnDisable()
         {
-            _figureSpawner.OnDisable();
             _figureSpawner.FigureSpawned -= OnFigureSpawned;
             _figureSpawner.FigureStopped -= OnFigureStoped;
+            _cupCompositeRoot.Cup.CellsChanged -= _figureSpawner.Start;
+            _nextFigure.FigureChanged -= _nextFigureView.Show;
         }
 
         private void Start()

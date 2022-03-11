@@ -1,58 +1,25 @@
-using UnityEngine;
+using System.Collections.Generic;
 using Tetris.Models;
-using System;
+using UnityEngine;
 
 public class CupView : MonoBehaviour
 {
-    [SerializeField] private GameObject _cellTemplate;
+    [SerializeField] private CellColor _cellTemplate;
 
-    private ICup _cup;
-    private GameObject[,] _cells;
+    private List<GameObject> _cells = new List<GameObject>();
 
-    public void Init(Cup cup)
+    public void Render(IReadOnlyDictionary<Vector2Int, Cell> cells)
     {
-        if (cup == null)
-            throw new ArgumentNullException(nameof(cup));
+        foreach (GameObject cell in _cells)
+            Destroy(cell);
 
-        _cup = cup;
-        _cup.CellChanged += OnChanged;
-        _cells = new GameObject[_cup.Width, _cup.Height];
-        CreateCup();
-    }
+        _cells.Clear();
 
-    private void OnDisable()
-    {
-        _cup.CellChanged -= OnChanged;
-    }
-
-    private void CreateCup()
-    {
-        for (int y = 0; y < _cup.Height; y++)
+        foreach (KeyValuePair<Vector2Int, Cell> cell in cells)
         {
-            for (int x = 0; x < _cup.Width; x++)
-            {
-                _cells[x, y] = Instantiate(_cellTemplate, new Vector2(x, y), Quaternion.identity, transform);
-                _cells[x, y].SetActive(false);
-            }
-        }
-    }
-
-    private void OnChanged()
-    {
-        Rendere();
-    }
-
-    private void Rendere()
-    {
-        for (int y = 0; y < _cup.Height; y++)
-        {
-            for (int x = 0; x < _cup.Width; x++)
-            {
-                if (_cup.Cells[x, y] == true)
-                    _cells[x, y].SetActive(true);
-                else
-                    _cells[x, y].SetActive(false);
-            }
+            CellColor newCell = Instantiate(_cellTemplate, new Vector2(cell.Key.x, cell.Key.y), Quaternion.identity, transform);
+            newCell.Init(cell.Value.Color);
+            _cells.Add(newCell.gameObject);
         }
     }
 }

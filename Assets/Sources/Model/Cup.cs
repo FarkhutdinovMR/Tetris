@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Tetris.Models
@@ -11,72 +12,61 @@ namespace Tetris.Models
 
     public interface ICup
     {
-        public bool[,] Cells { get; }
+        public IReadOnlyDictionary<Vector2Int, Cell> Cells { get; }
 
         public int Width { get; }
 
         public int Height { get; }
 
-        public event Action CellChanged;
+        public event Action<IReadOnlyDictionary<Vector2Int, Cell>> CellsChanged;
     }
 
     public class Cup : ICup, ILineRemover
     {
-        public Cup(bool[,] cells)
-        {
-            if (cells == null)
-                throw new ArgumentNullException(nameof(cells));
+        private readonly Dictionary<Vector2Int, Cell> _cells = new Dictionary<Vector2Int, Cell>();
+        private readonly int _width;
+        private readonly int _height;
 
-            Cells = cells;
+        public Cup(int width, int height)
+        {
+            _width = width;
+            _height = height;
         }
 
-        public event Action CellChanged;
+        public event Action<IReadOnlyDictionary<Vector2Int, Cell>> CellsChanged;
 
         public event Action<int> LineDeleted;
 
-        public bool[,] Cells { get; private set; }
+        public IReadOnlyDictionary<Vector2Int, Cell> Cells => _cells;
 
-        public IReadOnlyList<bool> f;
+        public int Width => _width;
 
-        public int Width => Cells.GetLength(0);
+        public int Height => _height;
 
-        public int Height => Cells.GetLength(1);
-
-        public bool IsEmpty(Vector2Int position)
+        public bool ContainCell(Vector2Int position)
         {
-            return Cells[position.x, position.y] == false;
+            return _cells.ContainsKey(position);
         }
 
-        public bool CheckExist(Vector2Int index)
+        public void AddCells(IReadOnlyDictionary<Vector2Int, Cell> cells, Vector2Int offset)
         {
-            return (index.x >= 0 && index.x < Width && index.y >= 0 && index.y < Height);
-        }
-
-        public void Edit(Vector2Int[] positions, Vector2Int offset)
-        {
-            foreach (Vector2Int position in positions)
+            foreach (KeyValuePair<Vector2Int, Cell> cell in cells)
             {
-                Vector2Int nextPosition = offset + position;
+                Vector2Int position = cell.Key + offset;
 
-                if (CheckExist(nextPosition) == false)
-                    throw new ArgumentOutOfRangeException();
+                if (CheckCellOutOfRange(position))
+                    throw new ArgumentOutOfRangeException(nameof(cells));
 
-                Cells[nextPosition.x, nextPosition.y] = true;
+                _cells.Add(position, cell.Value);
             }
 
             DeleteLines();
-            CellChanged?.Invoke();
+            CellsChanged?.Invoke(_cells);
         }
 
-        public bool IsLine(int y)
+        private bool CheckCellOutOfRange(Vector2Int position)
         {
-            for (int x = 0; x < Width; x++)
-            {
-                if (Cells[x, y] == false)
-                    return false;
-            }
-
-            return true;
+            return (position.x >= 0 && position.x < Width && position.x >= 0 && position.x < Height) == false;
         }
 
         private void DeleteLines()
@@ -87,7 +77,7 @@ namespace Tetris.Models
                 return;
 
             RemoveLines(lines);
-            MoveDownLines(lines);
+            MoveDownCells(lines);
 
             LineDeleted?.Invoke(lines.Count);
         }
@@ -96,10 +86,10 @@ namespace Tetris.Models
         {
             List<int> lines = new List<int>();
 
-            for (int y = 0; y < Height; y++)
+            for (int i = 0; i < _height; i++)
             {
-                if (IsLine(y))
-                    lines.Add(y);
+                if (_cells.Keys.Where(key => key.y == i).Count() == Width)
+                    lines.Add(i);
             }
 
             return lines;
@@ -109,14 +99,14 @@ namespace Tetris.Models
         {
             foreach(int y in lines)
             {
-                for (int x = 0; x < Width; x++)
-                {
-                    Cells[x, y] = false;
-                }
+                List<Vector2Int> cells = _cells.Keys.Where(position => position.y == y).ToList();
+
+                foreach (Vector2Int position in cells)
+                    _cells.Remove(position);
             }
         }
 
-        private void MoveDownLines(List<int> lines)
+        private void MoveDownCells(List<int> lines)
         {
             for (int i = 0; i < lines.Count;)
             {
@@ -128,19 +118,22 @@ namespace Tetris.Models
                         offset++;
                 }
 
-                for (int y = lines[i];  y < Height;  y++)
-                {
-                    for (int x = 0; x < Width; x++)
-                    {
-                        if (y + offset >= Height)
-                            break;
+                Vector2Int[] cells = _cells.Keys.
+                    Where(position => position.y >= lines[i] + offset).
+                    OrderBy(position => position.y).
+                    ToArray();
 
-                        Cells[x, y] = Cells[x, y + offset];
-                    }
-                }
+                foreach (Vector2Int position in cells)
+                    ReplaceCell(new Vector2Int(position.x, position.y - offset), position);
 
                 i += offset;
             }
+        }
+
+        private void ReplaceCell(Vector2Int newCell, Vector2Int oldCell)
+        {
+            _cells.Add(newCell, _cells[oldCell]);
+            _cells.Remove(oldCell);
         }
     }
 }

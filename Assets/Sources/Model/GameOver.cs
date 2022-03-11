@@ -1,54 +1,35 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Tetris.Models
 {
     public class GameOver
     {
-        private readonly Cup _cup;
         private readonly int _maxPosition;
-
         private bool _isEndGame;
 
-        public GameOver(Cup cup, int maxPosition)
+        public GameOver(int maxPosition)
         {
-            if (cup == null)
-                throw new ArgumentNullException(nameof(cup));
-
             if (maxPosition < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxPosition));
 
-            _cup = cup;
             _maxPosition = maxPosition;
-            _cup.CellChanged += OnChanged;
         }
 
         public event Action Ended;
 
-        public void OnDisable()
-        {
-            _cup.CellChanged -= OnChanged;
-        }
-
-        private void OnChanged()
-        {
-            Update();
-        }
-
-        private void Update()
+        public void StopGame(IReadOnlyDictionary<Vector2Int, Cell> cells)
         {
             if (_isEndGame)
                 throw new InvalidOperationException();
 
-            for (int i = 0; i < _cup.Width; i++)
+            if (cells.Keys.Where(position => position.y >= _maxPosition).Count() > 0)
             {
-                if (_cup.IsEmpty(new Vector2Int(i, _maxPosition)) == false)
-                {
-                    _isEndGame = true;
-                    Ended?.Invoke();
-                    _cup.CellChanged -= OnChanged;
-                    return;
-                }
+                _isEndGame = true;
+                Ended?.Invoke();
+                return;
             }
         }
     }

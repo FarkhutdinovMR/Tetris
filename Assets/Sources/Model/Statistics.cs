@@ -1,53 +1,36 @@
 using System;
+using System.Collections.Generic;
 
 namespace Tetris.Models
 {
     public class Statistics
     {
-        private readonly ILineRemover _cup;
-        private readonly int _costPerLine;
-
+        private readonly Dictionary<int, int> _costsPerLevels;
         private int _score;
         private int _line;
 
-        public Statistics(ILineRemover cup, int costPerLine)
+        public Statistics(Dictionary<int, int> costsPerLevels)
         {
-            if (cup == null)
-                throw new ArgumentNullException(nameof(cup));
+            if (costsPerLevels == null)
+                throw new ArgumentNullException(nameof(costsPerLevels));
 
-            if (costPerLine < 0)
-                throw new ArgumentOutOfRangeException(nameof(costPerLine));
-
-            _cup = cup;
-            _costPerLine = costPerLine;
+            _costsPerLevels = costsPerLevels;
         }
 
-        public event Action<int, int> ValueChanged;
+        public event Action<int> ScoreChanged;
 
-        public void OnEnable()
-        {
-            _cup.LineDeleted += OnLineDeleted;
-        }
+        public event Action<int> LineChanged;
 
-        public void OnDisable()
-        {
-            _cup.LineDeleted -= OnLineDeleted;
-        }
-
-        private void OnLineDeleted(int count)
+        public void Update(int count)
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            Calculate(count);
-        }
-
-        private void Calculate(int count)
-        {
-            _score += count * _costPerLine;
+            _score += _costsPerLevels[count];
             _line += count;
 
-            ValueChanged?.Invoke(_score, _line);
+            ScoreChanged?.Invoke(_score);
+            LineChanged?.Invoke(_line);
         }
     }
 }

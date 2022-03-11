@@ -1,26 +1,28 @@
 using UnityEngine;
 using Tetris.Models;
+using System.Collections.Generic;
 
 public class FiguresViewFactory : MonoBehaviour
 {
-    [SerializeField] private Transform _cellTemplate;
+    [SerializeField] private CellColor _cellTemplate;
     [SerializeField] private TransformableView _figureTemplate;
 
-    private TransformableView _figureView;
+    private TransformableView _figure;
 
     public void Create(Figure figure, Transformable transformable)
     {
-        if (_figureView != null)
-            Destroy(_figureView.gameObject);
+        if (_figure != null)
+            Destroy(_figure.gameObject);
 
-        _figureView = Instantiate(_figureTemplate);
-        _figureView.Init(transformable);
-        _figureTemplate.transform.position = new Vector2(transformable.Position.x, transformable.Position.y);
+        _figure = Instantiate(_figureTemplate);
+        _figure.Init(transformable);
+        _figure.transform.position = new Vector2(transformable.Position.x, transformable.Position.y);
 
-        foreach (Vector2Int position in figure.Cells)
+        foreach (KeyValuePair<Vector2Int, Cell> cell in figure.Cells)
         {
-            Transform cell = Instantiate(_cellTemplate, _figureView.transform);
-            cell.localPosition = new Vector2(position.x, position.y);
+            CellColor newCell = Instantiate(_cellTemplate, _figure.transform);
+            newCell.transform.localPosition = new Vector2(cell.Key.x, cell.Key.y);
+            newCell.Init(cell.Value.Color);
         }
     }
 }

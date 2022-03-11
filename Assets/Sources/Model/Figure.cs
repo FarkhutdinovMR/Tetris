@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Tetris.Models
@@ -21,7 +22,7 @@ namespace Tetris.Models
 
         public int Id { get; private set; }
 
-        public Vector2Int[] Cells => _shapes[_index].Cells;
+        public IReadOnlyDictionary<Vector2Int, Cell> Cells => _shapes[_index].Cells;
 
         public void ChangeShape(int direction)
         {
@@ -33,7 +34,7 @@ namespace Tetris.Models
             ShapeChanged?.Invoke();
         }
 
-        public Vector2Int[] GetShape(int direction)
+        public Dictionary<Vector2Int, Cell> GetShape(int direction)
         {
             return _shapes[Repeat(_index + direction, _shapes.Length)].Cells;
         }

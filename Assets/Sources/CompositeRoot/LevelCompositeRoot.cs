@@ -6,20 +6,28 @@ namespace CompositeRoot
     public class LevelCompositeRoot : CompositeRoot
     {
         [SerializeField] private StatisticsCompositeRoot _statisticsCompositeRoot;
-        [SerializeField] private LevelView _levelView;
+        [SerializeField] private TextView _levelView;
+        [SerializeField] private int _lineToLevelUp;
 
-        public Level Level { get; private set; }
+        private Level _level;
+
+        public Level Level => _level;
 
         public override void Compose()
         {
-            Level = new Level(_statisticsCompositeRoot.Statistics, 5);
-            Level.OnEnable();
-            _levelView.Init(Level);
+            _level = new Level(_lineToLevelUp);
         }
 
-        public void OnDisable()
+        private void OnEnable()
         {
-            Level.OnDisable();
+            _statisticsCompositeRoot.Statistics.LineChanged += _level.Update;
+            _level.Changed += _levelView.Set;
+        }
+
+        private void OnDisable()
+        {
+            _statisticsCompositeRoot.Statistics.LineChanged -= _level.Update;
+            _level.Changed -= _levelView.Set;
         }
     }
 }
