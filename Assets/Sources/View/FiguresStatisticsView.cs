@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class FiguresStatisticsView : MonoBehaviour
 {
-    [SerializeField] private FigureView _figureTemplate;
+    [SerializeField] private CellsViewFactory _cellsViewFactory;
+    [SerializeField] private Transform _figureContainer;
     [SerializeField] private TextView _textTemplate;
     [SerializeField] private Transform _figuresContainer;
     [SerializeField] private float _space;
 
+    private readonly List<TextView> _textViews = new List<TextView>();
     private float _verticalOffset;
-    private List<TextView> _textViews = new List<TextView>();
 
     public void Render(IEnumerable<Slot> figures)
     {
@@ -30,9 +31,9 @@ public class FiguresStatisticsView : MonoBehaviour
 
         foreach (Slot figure in figures)
         {
-            FigureView figureView = Instantiate(_figureTemplate, _figuresContainer);
+            Transform figureView = Instantiate(_figureContainer, _figuresContainer);
             figureView.transform.localPosition -= new Vector3(0, _verticalOffset);
-            figureView.Show(figure.Figure);
+            _cellsViewFactory.Create(figure.Figure.Cells, figureView);
 
             TextView textView = Instantiate(_textTemplate, transform);
             textView.Set(figure.Count);

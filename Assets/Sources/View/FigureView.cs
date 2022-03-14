@@ -1,26 +1,18 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Tetris.Models;
 using UnityEngine;
 
-class FigureView : MonoBehaviour
+public class FigureView : MonoBehaviour
 {
-    [SerializeField] private CellColor _cellTemplate;
+    [SerializeField] private CellsViewFactory _cellsViewFactory;
 
-    private readonly List<GameObject> _cells = new List<GameObject>();
+    private List<GameObject> _cells = new List<GameObject>();
 
-    public void Show(Figure figure)
+    public void Create(IReadOnlyDictionary<Vector2Int, Cell> cells)
     {
         foreach (GameObject cell in _cells)
             Destroy(cell);
 
-        _cells.Clear();
-
-        foreach (KeyValuePair<Vector2Int, Cell> cell in figure.Cells)
-        {
-            CellColor newCell = Instantiate(_cellTemplate, transform);
-            newCell.transform.localPosition = new Vector2(cell.Key.x, cell.Key.y);
-            newCell.Init(cell.Value.Color);
-            _cells.Add(newCell.gameObject);
-        }
+        _cells = _cellsViewFactory.Create(cells, transform);
     }
 }

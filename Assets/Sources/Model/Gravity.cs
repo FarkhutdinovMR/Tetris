@@ -3,23 +3,29 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    public class Gravity
+    public class Gravity : IMovement
     {
-        private readonly IMovement _transform;
+        private readonly IMovement _movement;
         private readonly float _delay;
         private float _runningTime;
 
-        public Gravity(IMovement transform, float delay)
+        public Gravity(IMovement movement, float delay)
         {
-            if (transform == null)
-                throw new ArgumentNullException(nameof(transform));
+            if (movement == null)
+                throw new ArgumentNullException(nameof(movement));
 
             if (delay <= 0)
                 throw new ArgumentOutOfRangeException(nameof(delay));
 
-            _transform = transform;
+            _movement = movement;
             _delay = delay;
         }
+
+        public Vector2Int Position => _movement.Position;
+
+        public void Move(Vector2Int position) => _movement.Move(position);
+
+        public void Rotate(int direction) => _movement.Rotate(direction);
 
         public void Update(float deltaTime)
         {
@@ -27,8 +33,7 @@ namespace Tetris.Models
 
             if (_runningTime > 1f / _delay)
             {
-                _transform.TryMove(Vector2Int.down);
-
+                _movement.Move(Vector2Int.down);
                 _runningTime = 0;
             }
         }

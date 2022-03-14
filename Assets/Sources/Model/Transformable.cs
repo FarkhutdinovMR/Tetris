@@ -2,7 +2,7 @@
 
 namespace Tetris.Models
 {
-    public class Transformable
+    public class Transformable : IMovement
     {
         private Vector2Int _position;
 
@@ -16,6 +16,11 @@ namespace Tetris.Models
         public void Move(Vector2Int position)
         {
             _position += position;
+        }
+
+        public void Rotate(int direction)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

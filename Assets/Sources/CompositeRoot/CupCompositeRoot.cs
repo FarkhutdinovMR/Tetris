@@ -1,5 +1,5 @@
-using UnityEngine;
 using Tetris.Models;
+using UnityEngine;
 
 namespace CompositeRoot
 {
@@ -11,12 +11,13 @@ namespace CompositeRoot
 
         private Cup _cup;
 
+        public Cup Cup => _cup;
+
         public override void Compose()
         {
             _cup = new Cup(_width, _height);
+            _cupView.BuildWalls(_width, _height);
         }
-
-        public Cup Cup => _cup;
 
         private void OnEnable()
         {
