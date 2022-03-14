@@ -3,20 +3,23 @@ using Tetris.Models;
 using System;
 using UnityEngine;
 
-public class FigureInputRouter
+public partial class FigureInputRouter : IMovement
 {
     private readonly FigureInput _figureInput;
     private readonly Timer _moveTimer;
-    private IMovement _transform;
+    private readonly IMovement _movement;
+    private readonly float _rate = 0.1f;
 
-    public FigureInputRouter(IMovement transform)
+    public Vector2Int Position => _movement.Position;
+
+    public FigureInputRouter(IMovement movement)
     {
-        if (transform == null)
-            throw new ArgumentNullException(nameof(transform));
+        if (movement == null)
+            throw new ArgumentNullException(nameof(movement));
 
-        _transform = transform;
+        _movement = movement;
         _figureInput = new FigureInput();
-        _moveTimer = new Timer(() => MoveFigure(_figureInput.Figure.Move.ReadValue<Vector2>()), 0.1f);
+        _moveTimer = new Timer(() => Move(Vector2Int.RoundToInt(_figureInput.Figure.Move.ReadValue<Vector2>())), _rate);
     }
 
     public void OnEnable()
@@ -40,6 +43,16 @@ public class FigureInputRouter
         _moveTimer.Tick(deltaTime);
     }
 
+    public void Move(Vector2Int direction)
+    {
+        _movement.Move(direction);
+    }
+
+    public void Rotate(int direction)
+    {
+        _movement.Rotate(direction);
+    }
+
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
         _moveTimer.Start();
@@ -52,56 +65,6 @@ public class FigureInputRouter
 
     private void OnRotate(InputAction.CallbackContext context)
     {
-        RotateFigure(context.ReadValue<float>());
-    }
-
-    private void MoveFigure(Vector2 direction)
-    {
-        _transform.TryMove(Vector2Int.RoundToInt(direction));
-    }
-
-    private void RotateFigure(float direction)
-    {
-        _transform.TryRotate((int)direction);
-    }
-
-    private class Timer
-    {
-        private readonly Action _action;
-        private readonly float _frequency;
-
-        private bool _isOn;
-        private float _runningTime;
-
-        public Timer(Action action, float frequency)
-        {
-            _action = action;
-            _frequency = frequency;
-        }
-
-        public void Start()
-        {
-            _isOn = true;
-            DoAction();
-        }
-
-        public void Stop() => _isOn = false;
-
-        public void Tick(float deltaTime)
-        {
-            if (_isOn)
-            {
-                _runningTime += deltaTime;
-
-                if (_runningTime >= _frequency)
-                    DoAction();
-            }
-        }
-
-        private void DoAction()
-        {
-            _action.Invoke();
-            _runningTime = 0f;
-        }
+        Rotate((int)context.ReadValue<float>());
     }
 }

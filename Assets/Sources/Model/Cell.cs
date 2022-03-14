@@ -2,11 +2,6 @@
 
 namespace Tetris.Models
 {
-    public interface IReadOnlyCell
-    {
-        public Color Color { get; }
-    }
-
     public class Cell : IReadOnlyCell
     {
         private readonly Color _color;
@@ -17,7 +12,5 @@ namespace Tetris.Models
         }
 
         public Color Color => _color;
-
-        public void Make() { }
     }
 }

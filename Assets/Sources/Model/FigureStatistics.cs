@@ -18,7 +18,7 @@ namespace Tetris.Models
 
         public event Action<IEnumerable<Slot>> Changed;
 
-        public void IncreaseCount(Figure figure)
+        public void IncreaseCount(Figure figure, IMovement movement)
         {
             int index = _variants.FindIndex(f => f.Figure.Id == figure.Id);
 

@@ -1,5 +1,5 @@
-using UnityEngine;
 using Tetris.Models;
+using UnityEngine;
 
 namespace CompositeRoot
 {
@@ -7,7 +7,7 @@ namespace CompositeRoot
     {
         [SerializeField] private CupCompositeRoot _cupCompositeRoot;
         [SerializeField] private LevelCompositeRoot _levelCompositeRoot;
-        [SerializeField] private FiguresViewFactory _figuresViewFactory;
+        [SerializeField] private FiguresTransformableView _figuresViewFactory;
         [SerializeField] private FigureView _nextFigureView;
 
         private Figures _figures;
@@ -15,6 +15,7 @@ namespace CompositeRoot
         private NextFigure _nextFigure;
 
         public Figures Figures => _figures;
+
         public FigureSpawner FigureSpawner => _figureSpawner;
 
         public override void Compose()
@@ -29,7 +30,7 @@ namespace CompositeRoot
             _figureSpawner.FigureSpawned += OnFigureSpawned;
             _figureSpawner.FigureStopped += OnFigureStoped;
             _cupCompositeRoot.Cup.CellsChanged += _figureSpawner.Start;
-            _nextFigure.FigureChanged += _nextFigureView.Show;
+            _nextFigure.FigureChanged += _nextFigureView.Create;
         }
 
         private void OnDisable()
@@ -37,7 +38,7 @@ namespace CompositeRoot
             _figureSpawner.FigureSpawned -= OnFigureSpawned;
             _figureSpawner.FigureStopped -= OnFigureStoped;
             _cupCompositeRoot.Cup.CellsChanged -= _figureSpawner.Start;
-            _nextFigure.FigureChanged -= _nextFigureView.Show;
+            _nextFigure.FigureChanged -= _nextFigureView.Create;
         }
 
         private void Start()
@@ -50,7 +51,7 @@ namespace CompositeRoot
             _figureSpawner.Update(Time.deltaTime);
         }
 
-        private void OnFigureSpawned(Figure figure, Transformable transformable)
+        private void OnFigureSpawned(Figure figure, IMovement transformable)
         {
             _figuresViewFactory.Create(figure, transformable);
             _figureSpawner.Figure.ShapeChanged += OnShapeChanged;
@@ -66,7 +67,7 @@ namespace CompositeRoot
 
         private void OnShapeChanged()
         {
-            _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Transformable);
+            _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Movement);
         }
     }
 }

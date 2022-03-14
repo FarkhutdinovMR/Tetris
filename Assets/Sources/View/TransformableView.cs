@@ -3,9 +3,9 @@ using Tetris.Models;
 
 public class TransformableView : MonoBehaviour
 {
-    private Transformable _transformable;
+    private IMovement _transformable;
 
-    public void Init(Transformable transformable)
+    public void Init(IMovement transformable)
     {
         _transformable = transformable;
     }

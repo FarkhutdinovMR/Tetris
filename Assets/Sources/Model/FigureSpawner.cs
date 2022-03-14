@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Tetris.Models
 {
@@ -12,10 +11,9 @@ namespace Tetris.Models
         private readonly NextFigure _nextFigure;
 
         private Figure _figure;
-        private Gravity _gravity;
         private FigureInputRouter _inputRouter;
-        private Transformable _transformable;
-        private Movement _movement;
+        private IMovement _movement;
+        private Gravity _gravity;
 
         public FigureSpawner(Cup cup, Level level, NextFigure nextFigure)
         {
@@ -33,15 +31,13 @@ namespace Tetris.Models
             _nextFigure = nextFigure;
         }
 
-        public event Action<Figure, Transformable> FigureSpawned;
-
-        public event Action<Figure> IdFigureSpawned;
+        public event Action<Figure, IMovement> FigureSpawned;
 
         public event Action FigureStopped;
 
         public Figure Figure => _figure;
 
-        public Transformable Transformable => _transformable;
+        public IMovement Movement => _movement;
 
         public void Update(float deltaTime)
         {
@@ -64,15 +60,16 @@ namespace Tetris.Models
 
         public void Spawn()
         {
+            var position = new Vector2Int(_cup.Width / 2, _cup.Height - 4);
             _figure = _nextFigure.GetFigure();
-            _transformable = new Transformable(new Vector2Int(_cup.Width / 2, _cup.Height - 4));
-            _movement = new Movement(_figure, _transformable, _cup);
-            _gravity = new Gravity(_movement, _level.Value);
-            _inputRouter = new FigureInputRouter(_movement);
-            _inputRouter.OnEnable();
 
-            FigureSpawned?.Invoke(_figure, _transformable);
-            IdFigureSpawned?.Invoke(_figure);
+            var transform = new Transformable(position);
+            _movement = new Movement(transform, _figure, _cup);
+            _gravity = new Gravity(_movement, _level.Value);
+            _inputRouter = new FigureInputRouter(_gravity);
+
+            _inputRouter.OnEnable();
+            FigureSpawned?.Invoke(_figure, _movement);
         }
     }
 }

@@ -17,13 +17,13 @@ namespace CompositeRoot
 
         private void OnEnable()
         {
-            _figuresCompositeRoot.FigureSpawner.IdFigureSpawned += _statistics.IncreaseCount;
+            _figuresCompositeRoot.FigureSpawner.FigureSpawned += _statistics.IncreaseCount;
             _statistics.Changed += _view.Render;
         }
 
         private void OnDisable()
         {
-            _figuresCompositeRoot.FigureSpawner.IdFigureSpawned -= _statistics.IncreaseCount;
+            _figuresCompositeRoot.FigureSpawner.FigureSpawned -= _statistics.IncreaseCount;
             _statistics.Changed -= _view.Render;
         }
     }
