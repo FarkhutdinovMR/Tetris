@@ -1,6 +1,6 @@
 ﻿namespace Tetris.Models
 {
-    public interface IFigure
+    public interface IFigureFactory
     {
         public Figure Create();
     }

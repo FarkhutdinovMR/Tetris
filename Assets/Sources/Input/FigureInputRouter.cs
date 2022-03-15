@@ -6,7 +6,7 @@ using UnityEngine;
 public partial class FigureInputRouter : IMovement
 {
     private readonly FigureInput _figureInput;
-    private readonly Timer _moveTimer;
+    private readonly RepeatTimer _moveTimer;
     private readonly IMovement _movement;
     private readonly float _rate = 0.1f;
 
@@ -19,7 +19,7 @@ public partial class FigureInputRouter : IMovement
 
         _movement = movement;
         _figureInput = new FigureInput();
-        _moveTimer = new Timer(() => Move(Vector2Int.RoundToInt(_figureInput.Figure.Move.ReadValue<Vector2>())), _rate);
+        _moveTimer = new RepeatTimer(() => Move(Vector2Int.RoundToInt(_figureInput.Figure.Move.ReadValue<Vector2>())), _rate);
     }
 
     public void OnEnable()

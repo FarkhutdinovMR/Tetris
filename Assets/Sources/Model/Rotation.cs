@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Tetris.Models
 {
-    public class Shape
+    public class Rotation
     {
-        private readonly Dictionary<Vector2Int, Cell> _cells;
+        private readonly IReadOnlyList<IReadOnlyCell> _cells;
 
-        public Shape(Dictionary<Vector2Int, Cell> cells)
+        public Rotation(IReadOnlyList<IReadOnlyCell> cells)
         {
             if (cells == null)
                 throw new ArgumentNullException(nameof(cells));
@@ -16,6 +15,6 @@ namespace Tetris.Models
             _cells = cells;
         }
 
-        public Dictionary<Vector2Int, Cell> Cells => _cells;
+        public IReadOnlyList<IReadOnlyCell> Cells => _cells;
     }
 }

@@ -19,4 +19,10 @@ public class FiguresTransformableView : MonoBehaviour
 
         _cellsViewFactory.Create(figure.Cells, _figure.transform);
     }
+
+    public void Destroy()
+    {
+        if (_figure != null)
+            Destroy(_figure.gameObject);
+    }
 }

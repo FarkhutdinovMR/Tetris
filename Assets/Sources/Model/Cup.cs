@@ -5,39 +5,37 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    public interface ILineRemover
+    public class Cup : ILineRemover
     {
-        public event Action<int> LineDeleted;
-    }
-
-    public interface ICup
-    {
-        public IReadOnlyDictionary<Vector2Int, Cell> Cells { get; }
-
-        public int Width { get; }
-
-        public int Height { get; }
-
-        public event Action<IReadOnlyDictionary<Vector2Int, Cell>> CellsChanged;
-    }
-
-    public class Cup : ICup, ILineRemover
-    {
-        private readonly Dictionary<Vector2Int, Cell> _cells = new Dictionary<Vector2Int, Cell>();
+        private readonly List<Cell> _cells = new List<Cell>();
         private readonly int _width;
         private readonly int _height;
+        
+        private Action<IEnumerable<int>> _linesRemovers;
+        private Timer<IEnumerable<Cell>, List<int>> _timer;
+        private int _slowRemoverCount;
 
         public Cup(int width, int height)
         {
+            if (width < 0)
+                throw new ArgumentOutOfRangeException(nameof(width));
+
+            if (height < 0)
+                throw new ArgumentOutOfRangeException(nameof(height));
+
             _width = width;
             _height = height;
+
+            _linesRemovers = AnimationRemoveLine;
         }
 
-        public event Action<IReadOnlyDictionary<Vector2Int, Cell>> CellsChanged;
+        public event Action<IReadOnlyList<IReadOnlyCell>> CellsChanged;
 
         public event Action<int> LineDeleted;
 
-        public IReadOnlyDictionary<Vector2Int, Cell> Cells => _cells;
+        public event Action spawnFigure;
+
+        public IReadOnlyList<IReadOnlyCell> Cells => _cells;
 
         public int Width => _width;
 
@@ -45,41 +43,51 @@ namespace Tetris.Models
 
         public bool ContainCell(Vector2Int position)
         {
-            return _cells.ContainsKey(position);
+            return _cells.FindIndex(cell => cell.Position == position) >= 0;
         }
 
-        public void AddCells(IReadOnlyDictionary<Vector2Int, Cell> cells, Vector2Int offset)
+        public bool TryAddCells(IReadOnlyList<IReadOnlyCell> cells, Vector2Int offset)
         {
-            foreach (KeyValuePair<Vector2Int, Cell> cell in cells)
+            foreach (Cell cell in cells)
             {
-                Vector2Int position = cell.Key + offset;
+                Vector2Int position = cell.Position + offset;
 
                 if (CheckCellOutOfRange(position))
                     throw new ArgumentOutOfRangeException(nameof(cells));
 
-                _cells.Add(position, cell.Value);
+                // If new cell position contain in _cells then game over
+                if (_cells.FindIndex(c => c.Position == position) >= 0)
+                    return false;
+
+                _cells.Add(new Cell(position, cell.Color));
             }
 
-            DeleteLines();
             CellsChanged?.Invoke(_cells);
+            return true;
+        }
+
+        public void Update(float deltaTime)
+        {
+            if (_timer != null)
+                _timer.Tick(deltaTime);
+        }
+
+        public void DeleteLines()
+        {
+            List<int> lines = FindLines();
+
+            if (lines.Count == 0)
+            {
+                spawnFigure?.Invoke();
+                return;
+            }
+
+            _linesRemovers.Invoke(lines);
         }
 
         private bool CheckCellOutOfRange(Vector2Int position)
         {
             return (position.x >= 0 && position.x < Width && position.x >= 0 && position.x < Height) == false;
-        }
-
-        private void DeleteLines()
-        {
-            List<int> lines = FindLines();
-
-            if (lines.Count == 0)
-                return;
-
-            RemoveLines(lines);
-            MoveDownCells(lines);
-
-            LineDeleted?.Invoke(lines.Count);
         }
 
         private List<int> FindLines()
@@ -88,52 +96,83 @@ namespace Tetris.Models
 
             for (int i = 0; i < _height; i++)
             {
-                if (_cells.Keys.Where(key => key.y == i).Count() == Width)
+                if (_cells.Where(cell => cell.Position.y == i).Count() == Width)
                     lines.Add(i);
             }
 
             return lines;
         }
 
-        private void RemoveLines(List<int> lines)
-        {
-            foreach(int y in lines)
-            {
-                List<Vector2Int> cells = _cells.Keys.Where(position => position.y == y).ToList();
-
-                foreach (Vector2Int position in cells)
-                    _cells.Remove(position);
-            }
-        }
-
         private void MoveDownCells(List<int> lines)
         {
             for (int i = 0; i < lines.Count;)
             {
-                int offset = 1;
+                int lineDeleted = CalculateLineInRowAt(lines.ToArray(), i);
 
-                for (int j = i; j < lines.Count; j++)
-                {
-                    if (i + j + 1 < lines.Count && lines[i + j + 1] - lines[i + j] == 1)
-                        offset++;
-                }
+                IEnumerable<Cell> cells = _cells.
+                    Where(cell => cell.Position.y >= lines[i] + lineDeleted).
+                    OrderBy(cell => cell.Position.y);
 
-                Vector2Int[] cells = _cells.Keys.
-                    Where(position => position.y >= lines[i] + offset).
-                    OrderBy(position => position.y).
-                    ToArray();
+                foreach(Cell cell in cells)
+                    MoveCell(cell, new Vector2Int(cell.Position.x, cell.Position.y - lineDeleted));
 
-                foreach (Vector2Int position in cells)
-                    ReplaceCell(new Vector2Int(position.x, position.y - offset), position);
-
-                i += offset;
+                i += lineDeleted;
             }
+
+            LineDeleted?.Invoke(lines.Count);
+            spawnFigure?.Invoke();
+            CellsChanged?.Invoke(_cells);
         }
 
-        private void ReplaceCell(Vector2Int newCell, Vector2Int oldCell)
+        private int CalculateLineInRowAt(int[] lines, int start)
         {
-            _cells.Add(newCell, _cells[oldCell]);
-            _cells.Remove(oldCell);
+            int count = 1;
+
+            for (int i = start; i < lines.Length - 1; i++)
+            {
+                if (lines[i + 1] - lines[i] == 1)
+                    count++;
+            }
+
+            return count;
+        }
+
+        private void MoveCell(Cell cell, Vector2Int position)
+        {
+            int index = _cells.FindIndex(c => c == cell);
+            _cells[index] = cell.Move(position);
+        }
+
+        private void DefaultRemoveLine(IEnumerable<int> lines)
+        {
+            foreach (int y in lines)
+                _cells.RemoveAll(cell => cell.Position.y == y);
+        }
+
+        private void AnimationRemoveLine(IEnumerable<int> lines)
+        {
+            List<Cell> cells = new List<Cell>();
+
+            foreach (int y in lines)
+                cells.AddRange(_cells.Where(cell => cell.Position.y == y));
+
+            _slowRemoverCount = 0;
+            _timer = new Timer<IEnumerable<Cell>, List<int>>(0.1f, Width / 2, SlowRemoveCells, MoveDownCells, cells, lines.ToList());
+        }
+
+        private void SlowRemoveCells(IEnumerable<Cell> cells)
+        {
+            int center = Width / 2;
+
+            List<Cell> removingCells = new List<Cell>();
+
+            removingCells.AddRange(cells.Where(cell => cell.Position.x == center - 1 - _slowRemoverCount || cell.Position.x == center + _slowRemoverCount));
+
+            foreach (Cell cell in removingCells)
+                _cells.Remove(cell);
+
+            _slowRemoverCount++;
+            CellsChanged?.Invoke(_cells);
         }
     }
 }

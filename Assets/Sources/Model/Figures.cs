@@ -5,11 +5,11 @@ namespace Tetris.Models
 {
     public class Figures
     {
-        private readonly Dictionary<int, IFigure> _variants;
+        private readonly Dictionary<int, IFigureFactory> _variants;
 
         public Figures()
         {
-            _variants = new Dictionary<int, IFigure>()
+            _variants = new Dictionary<int, IFigureFactory>()
             {
                 { 0, new TFigure() },
                 { 1, new LFigure() },
@@ -21,7 +21,7 @@ namespace Tetris.Models
             };
         }
 
-        public IReadOnlyDictionary<int, IFigure> Variants => _variants;
+        public IReadOnlyDictionary<int, IFigureFactory> Variants => _variants;
 
         public Figure CreateFigure(int id)
         {

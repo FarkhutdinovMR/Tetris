@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Tetris.Models
@@ -19,7 +18,7 @@ namespace Tetris.Models
             _figure = _figures.CreateFigure(Random.Range(0, _figures.Variants.Count));
         }
 
-        public event Action<IReadOnlyDictionary<Vector2Int, Cell>> FigureChanged;
+        public event Action<IReadOnlyList<IReadOnlyCell>> FigureChanged;
 
         public Figure GetFigure()
         {

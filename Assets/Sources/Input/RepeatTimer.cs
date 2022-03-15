@@ -2,7 +2,7 @@
 
 public partial class FigureInputRouter
 {
-    private class Timer
+    private class RepeatTimer
     {
         private readonly Action _action;
         private readonly float _frequency;
@@ -10,7 +10,7 @@ public partial class FigureInputRouter
         private bool _isOn;
         private float _runningTime;
 
-        public Timer(Action action, float frequency)
+        public RepeatTimer(Action action, float frequency)
         {
             _action = action;
             _frequency = frequency;
