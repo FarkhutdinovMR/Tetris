@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Tetris.Models
 {
@@ -20,12 +19,12 @@ namespace Tetris.Models
 
         public event Action Ended;
 
-        public void StopGame(IReadOnlyDictionary<Vector2Int, Cell> cells)
+        public void StopGame(IReadOnlyList<IReadOnlyCell> cells)
         {
             if (_isEndGame)
                 throw new InvalidOperationException();
 
-            if (cells.Keys.Where(position => position.y >= _maxPosition).Count() > 0)
+            if (cells.Where(cell => cell.Position.y >= _maxPosition).Count() > 0)
             {
                 _isEndGame = true;
                 Ended?.Invoke();

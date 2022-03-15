@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Tetris.Models;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace CompositeRoot
         [SerializeField] private CupCompositeRoot _cupCompositeRoot;
         [SerializeField] private LevelCompositeRoot _levelCompositeRoot;
         [SerializeField] private FiguresTransformableView _figuresViewFactory;
-        [SerializeField] private FigureView _nextFigureView;
+        [SerializeField] private CellsView _nextFigureView;
 
         private Figures _figures;
         private FigureSpawner _figureSpawner;
@@ -29,7 +30,7 @@ namespace CompositeRoot
         {
             _figureSpawner.FigureSpawned += OnFigureSpawned;
             _figureSpawner.FigureStopped += OnFigureStoped;
-            _cupCompositeRoot.Cup.CellsChanged += _figureSpawner.Start;
+            _cupCompositeRoot.Cup.spawnFigure += _figureSpawner.Start;
             _nextFigure.FigureChanged += _nextFigureView.Create;
         }
 
@@ -37,7 +38,7 @@ namespace CompositeRoot
         {
             _figureSpawner.FigureSpawned -= OnFigureSpawned;
             _figureSpawner.FigureStopped -= OnFigureStoped;
-            _cupCompositeRoot.Cup.CellsChanged -= _figureSpawner.Start;
+            _cupCompositeRoot.Cup.spawnFigure -= _figureSpawner.Start;
             _nextFigure.FigureChanged -= _nextFigureView.Create;
         }
 
@@ -54,7 +55,8 @@ namespace CompositeRoot
         private void OnFigureSpawned(Figure figure, IMovement transformable)
         {
             _figuresViewFactory.Create(figure, transformable);
-            _figureSpawner.Figure.ShapeChanged += OnShapeChanged;
+            _figureSpawner.Figure.CellsChanged += OnShapeChanged;
+            _figureSpawner.Figure.Destroed += _figuresViewFactory.Destroy;
         }
 
         private void OnFigureStoped()
@@ -62,10 +64,11 @@ namespace CompositeRoot
             if (_figureSpawner.Figure == null)
                 return;
 
-            _figureSpawner.Figure.ShapeChanged -= OnShapeChanged;
+            _figureSpawner.Figure.CellsChanged -= OnShapeChanged;
+            _figureSpawner.Figure.Destroed -= _figuresViewFactory.Destroy;
         }
 
-        private void OnShapeChanged()
+        private void OnShapeChanged(IReadOnlyList<IReadOnlyCell> cells)
         {
             _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Movement);
         }

@@ -10,6 +10,8 @@ namespace Tetris.Models
         private readonly Figure _figure;
         private readonly Cup _cup;
 
+        private bool _isActive = true;
+
         public Movement(IMovement movement, Figure figure, Cup cup)
         {
             if (movement == null)
@@ -30,9 +32,12 @@ namespace Tetris.Models
 
         public void Move(Vector2Int direction)
         {
-            foreach(Vector2Int position in _figure.Cells.Keys)
+            if (_isActive == false)
+                return;
+
+            foreach (Cell cell in _figure.Cells)
             {
-                Vector2Int currentPosition = _movement.Position + position;
+                Vector2Int currentPosition = _movement.Position + cell.Position;
                 Vector2Int nextPosition = currentPosition + direction;
 
                 if (nextPosition.x < 0 || nextPosition.x >= _cup.Width)
@@ -40,14 +45,14 @@ namespace Tetris.Models
 
                 if (nextPosition.y < 0)
                 {
-                    _cup.AddCells(_figure.Cells, _movement.Position);
+                    TakeCells();
                     return;
                 }
 
                 if (_cup.ContainCell(nextPosition))
                 {
                     if (currentPosition.y - nextPosition.y == 1)
-                        _cup.AddCells(_figure.Cells, _movement.Position);
+                        TakeCells();
 
                     return;
                 }
@@ -58,19 +63,35 @@ namespace Tetris.Models
 
         public void Rotate(int direction)
         {
-            Dictionary<Vector2Int, Cell> cells = _figure.GetShape(direction);
+            if (_isActive == false)
+                return;
 
-            foreach (Vector2Int position in cells.Keys)
+            IReadOnlyList<IReadOnlyCell> cells = _figure.GetRotatedCells(direction);
+
+            foreach (Cell cell in cells)
             {
-                Vector2Int currentPosition = _movement.Position + position;
+                Vector2Int currentPosition = _movement.Position + cell.Position;
 
                 if ((currentPosition.x < 0 || currentPosition.x >= _cup.Width) ||
                     (currentPosition.y < 0) ||
                     (_cup.ContainCell(currentPosition)))
+                {
                     return;
+                }
             }
 
-            _figure.ChangeShape(direction);
+            _figure.Rotate(direction);
+        }
+
+        private void TakeCells()
+        {
+            _isActive = false;
+
+            if (_cup.TryAddCells(_figure.Cells, _movement.Position))
+            {
+                _figure.Destroy();
+                _cup.DeleteLines();
+            }
         }
     }
 }

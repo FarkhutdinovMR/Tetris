@@ -12,7 +12,7 @@ namespace Tetris.Models
 
         private Figure _figure;
         private FigureInputRouter _inputRouter;
-        private IMovement _movement;
+        private Movement _movement;
         private Gravity _gravity;
 
         public FigureSpawner(Cup cup, Level level, NextFigure nextFigure)
@@ -37,7 +37,7 @@ namespace Tetris.Models
 
         public Figure Figure => _figure;
 
-        public IMovement Movement => _movement;
+        public Movement Movement => _movement;
 
         public void Update(float deltaTime)
         {
@@ -48,7 +48,7 @@ namespace Tetris.Models
                 _inputRouter.Update(deltaTime);
         }
 
-        public void Start(IReadOnlyDictionary<Vector2Int, Cell> cells)
+        public void Start()
         {
             if (_inputRouter != null)
                 _inputRouter.OnDisable();

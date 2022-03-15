@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    class SquareFigure : IFigure
+    class SquareFigure : IFigureFactory
     {
         public Figure Create()
         {
-            var cell = new Cell(Color.red);
+            var color = Color.red;
 
-            Shape shape_1 = new Shape(new Dictionary<Vector2Int, Cell>
+            Rotation rotation_1 = new Rotation(new List<Cell>
             {
-                { new Vector2Int(-1, 0), cell },
-                { new Vector2Int(-1, 1), cell },
-                { new Vector2Int(0, 0), cell },
-                { new Vector2Int(0, 1), cell },
+                new Cell(new Vector2Int(-1, 0), color),
+                new Cell(new Vector2Int(-1, 1), color),
+                new Cell(new Vector2Int(0, 0), color),
+                new Cell(new Vector2Int(0, 1), color)
             });
 
-            var shapes = new Shape[] { shape_1 };
+            var rotations = new Rotation[] { rotation_1 };
 
-            return new Figure(shapes, 1);
+            return new Figure(rotations, 1);
         }
     }
 }

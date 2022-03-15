@@ -1,42 +1,49 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Tetris.Models
 {
     public class Figure
     {
-        private readonly Shape[] _shapes;
-        private int _index;
+        private readonly Rotation[] _rotations;
+        private readonly int _id;
+        private int _angle;
 
-        public Figure(Shape[] shapes, int id)
+        public Figure(Rotation[] rotations, int id)
         {
-            if (shapes == null)
-                throw new ArgumentNullException(nameof(shapes));
+            if (rotations == null)
+                throw new ArgumentNullException(nameof(rotations));
 
-            _shapes = shapes;
-            Id = id;
+            _rotations = rotations;
+            _id = id;
         }
 
-        public event Action ShapeChanged;
+        public event Action<IReadOnlyList<IReadOnlyCell>> CellsChanged;
 
-        public int Id { get; private set; }
+        public event Action Destroed;
 
-        public IReadOnlyDictionary<Vector2Int, Cell> Cells => _shapes[_index].Cells;
+        public int Id => _id;
 
-        public void ChangeShape(int direction)
+        public IReadOnlyList<IReadOnlyCell> Cells => _rotations[_angle].Cells;
+
+        public void Rotate(int direction)
         {
             if (direction == 0)
                 throw new ArgumentOutOfRangeException(nameof(direction));
 
-            _index = Repeat(_index + direction, _shapes.Length);
+            _angle = Repeat(_angle + direction, _rotations.Length);
 
-            ShapeChanged?.Invoke();
+            CellsChanged?.Invoke(Cells);
         }
 
-        public Dictionary<Vector2Int, Cell> GetShape(int direction)
+        public IReadOnlyList<IReadOnlyCell> GetRotatedCells(int direction)
         {
-            return _shapes[Repeat(_index + direction, _shapes.Length)].Cells;
+            return _rotations[Repeat(_angle + direction, _rotations.Length)].Cells;
+        }
+
+        public void Destroy()
+        {
+            Destroed?.Invoke();
         }
 
         private int Repeat(int value, int length)

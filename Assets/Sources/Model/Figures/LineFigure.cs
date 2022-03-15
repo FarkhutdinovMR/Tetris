@@ -3,31 +3,31 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    class LineFigure : IFigure
+    class LineFigure : IFigureFactory
     {
         public Figure Create()
         {
-            var cell = new Cell(Color.green);
+            var color = Color.green;
 
-            Shape shape_1 = new Shape(new Dictionary<Vector2Int, Cell>
+            Rotation rotation_1 = new Rotation(new List<Cell>
             {
-                { new Vector2Int(-2, 1), cell },
-                { new Vector2Int(-1, 1), cell },
-                { new Vector2Int(0, 1), cell },
-                { new Vector2Int(1, 1), cell },
+                new Cell(new Vector2Int(-2, 1), color),
+                new Cell(new Vector2Int(-1, 1), color),
+                new Cell(new Vector2Int(0, 1), color),
+                new Cell(new Vector2Int(1, 1), color),
             });
 
-            Shape shape_2 = new Shape(new Dictionary<Vector2Int, Cell>
+            Rotation rotation_2 = new Rotation(new List<Cell>
             {
-                { new Vector2Int(-1, 0), cell },
-                { new Vector2Int(-1, 1), cell },
-                { new Vector2Int(-1, 2), cell },
-                { new Vector2Int(-1, 3), cell },
+                new Cell(new Vector2Int(-1, 0), color),
+                new Cell(new Vector2Int(-1, 1), color),
+                new Cell(new Vector2Int(-1, 2), color),
+                new Cell(new Vector2Int(-1, 3), color),
             });
 
-            var shapes = new Shape[] { shape_1, shape_2 };
+            var rotations = new Rotation[] { rotation_1, rotation_2 };
 
-            return new Figure(shapes, 2);
+            return new Figure(rotations, 2);
         }
     }
 }
