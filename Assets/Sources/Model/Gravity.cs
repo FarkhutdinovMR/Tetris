@@ -7,6 +7,7 @@ namespace Tetris.Models
     {
         private readonly IMovement _movement;
         private readonly float _delay;
+
         private float _runningTime;
 
         public Gravity(IMovement movement, float delay)
@@ -21,11 +22,10 @@ namespace Tetris.Models
             _delay = delay;
         }
 
-        public Vector2Int Position => _movement.Position;
-
-        public void Move(Vector2Int position) => _movement.Move(position);
-
-        public void Rotate(int direction) => _movement.Rotate(direction);
+        public void Move(Vector2Int direction)
+        {
+            _movement.Move(direction);
+        }
 
         public void Update(float deltaTime)
         {

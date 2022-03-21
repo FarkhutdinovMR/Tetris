@@ -3,14 +3,14 @@ using Tetris.Models;
 
 public class TransformableView : MonoBehaviour
 {
-    private IMovement _transformable;
+    private Transformable _transformable;
 
-    public void Init(IMovement transformable)
+    public void Init(Transformable transformable)
     {
         _transformable = transformable;
     }
 
-    public void LateUpdate()
+    private void LateUpdate()
     {
         transform.position = new Vector2(_transformable.Position.x, _transformable.Position.y);
     }

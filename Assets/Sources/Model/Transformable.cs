@@ -17,10 +17,5 @@ namespace Tetris.Models
         {
             _position += position;
         }
-
-        public void Rotate(int direction)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

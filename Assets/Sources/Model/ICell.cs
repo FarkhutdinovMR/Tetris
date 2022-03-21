@@ -2,9 +2,9 @@
 
 namespace Tetris.Models
 {
-    public interface IReadOnlyCell
+    public interface ICell
     {
         public Vector2Int Position { get; }
-        public Color Color { get; }
+        public ICell Move(Vector2Int position);
     }
 }

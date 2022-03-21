@@ -5,9 +5,9 @@ namespace Tetris.Models
 {
     public class Rotation
     {
-        private readonly IReadOnlyList<IReadOnlyCell> _cells;
+        private readonly IReadOnlyList<ICell> _cells;
 
-        public Rotation(IReadOnlyList<IReadOnlyCell> cells)
+        public Rotation(IReadOnlyList<ICell> cells)
         {
             if (cells == null)
                 throw new ArgumentNullException(nameof(cells));
@@ -15,6 +15,6 @@ namespace Tetris.Models
             _cells = cells;
         }
 
-        public IReadOnlyList<IReadOnlyCell> Cells => _cells;
+        public IReadOnlyList<ICell> Cells => _cells;
     }
 }

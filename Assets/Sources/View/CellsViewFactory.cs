@@ -6,11 +6,11 @@ public class CellsViewFactory : MonoBehaviour
 {
     [SerializeField] private CellColor _cellTemplate;
 
-    public List<GameObject> Create(IReadOnlyList<IReadOnlyCell> cells, Transform container)
+    public List<GameObject> Create(IEnumerable<ICell> cells, Transform container)
     {
         List<GameObject> newCells = new List<GameObject>();
 
-        foreach (Cell cell in cells)
+        foreach (Pixel cell in cells)
         {
             CellColor newCell = Instantiate(_cellTemplate, container);
             newCell.transform.localPosition = new Vector2(cell.Position.x, cell.Position.y);

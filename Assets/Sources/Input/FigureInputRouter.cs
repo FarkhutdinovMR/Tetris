@@ -3,21 +3,21 @@ using Tetris.Models;
 using System;
 using UnityEngine;
 
-public partial class FigureInputRouter : IMovement
+public partial class FigureInputRouter : IMovement, IRotation
 {
     private readonly FigureInput _figureInput;
     private readonly RepeatTimer _moveTimer;
     private readonly IMovement _movement;
+    private readonly IRotation _rotation;
     private readonly float _rate = 0.1f;
 
-    public Vector2Int Position => _movement.Position;
-
-    public FigureInputRouter(IMovement movement)
+    public FigureInputRouter(IMovement movement, IRotation rotation)
     {
         if (movement == null)
             throw new ArgumentNullException(nameof(movement));
 
         _movement = movement;
+        _rotation = rotation;
         _figureInput = new FigureInput();
         _moveTimer = new RepeatTimer(() => Move(Vector2Int.RoundToInt(_figureInput.Figure.Move.ReadValue<Vector2>())), _rate);
     }
@@ -50,7 +50,7 @@ public partial class FigureInputRouter : IMovement
 
     public void Rotate(int direction)
     {
-        _movement.Rotate(direction);
+        _rotation.Rotate(direction);
     }
 
     private void OnMoveStarted(InputAction.CallbackContext context)

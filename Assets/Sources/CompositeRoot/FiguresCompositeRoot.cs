@@ -30,7 +30,7 @@ namespace CompositeRoot
         {
             _figureSpawner.FigureSpawned += OnFigureSpawned;
             _figureSpawner.FigureStopped += OnFigureStoped;
-            _cupCompositeRoot.Cup.spawnFigure += _figureSpawner.Start;
+            _cupCompositeRoot.Lines.LineDeleted += _figureSpawner.Start;
             _nextFigure.FigureChanged += _nextFigureView.Create;
         }
 
@@ -38,7 +38,7 @@ namespace CompositeRoot
         {
             _figureSpawner.FigureSpawned -= OnFigureSpawned;
             _figureSpawner.FigureStopped -= OnFigureStoped;
-            _cupCompositeRoot.Cup.spawnFigure -= _figureSpawner.Start;
+            _cupCompositeRoot.Lines.LineDeleted -= _figureSpawner.Start;
             _nextFigure.FigureChanged -= _nextFigureView.Create;
         }
 
@@ -52,10 +52,10 @@ namespace CompositeRoot
             _figureSpawner.Update(Time.deltaTime);
         }
 
-        private void OnFigureSpawned(Figure figure, IMovement transformable)
+        private void OnFigureSpawned(Figure figure, Transformable transformable)
         {
             _figuresViewFactory.Create(figure, transformable);
-            _figureSpawner.Figure.CellsChanged += OnShapeChanged;
+            _figureSpawner.Figure.CellsChanged += OnCellsChanged;
             _figureSpawner.Figure.Destroed += _figuresViewFactory.Destroy;
         }
 
@@ -64,13 +64,13 @@ namespace CompositeRoot
             if (_figureSpawner.Figure == null)
                 return;
 
-            _figureSpawner.Figure.CellsChanged -= OnShapeChanged;
+            _figureSpawner.Figure.CellsChanged -= OnCellsChanged;
             _figureSpawner.Figure.Destroed -= _figuresViewFactory.Destroy;
         }
 
-        private void OnShapeChanged(IReadOnlyList<IReadOnlyCell> cells)
+        private void OnCellsChanged(IReadOnlyList<ICell> cells)
         {
-            _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Movement);
+            _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Transformable);
         }
     }
 }

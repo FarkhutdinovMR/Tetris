@@ -8,7 +8,7 @@ public class CellsView : MonoBehaviour
 
     private List<GameObject> _cells = new List<GameObject>();
 
-    public void Create(IReadOnlyList<IReadOnlyCell> cells)
+    public void Create(IEnumerable<ICell> cells)
     {
         foreach (GameObject cell in _cells)
             Destroy(cell);

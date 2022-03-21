@@ -8,7 +8,7 @@ public class FiguresTransformableView : MonoBehaviour
 
     private TransformableView _figure;
 
-    public void Create(Figure figure, IMovement transformable)
+    public void Create(Figure figure, Transformable transformable)
     {
         if (_figure != null)
             Destroy(_figure.gameObject);

@@ -18,13 +18,13 @@ namespace Tetris.Models
             _id = id;
         }
 
-        public event Action<IReadOnlyList<IReadOnlyCell>> CellsChanged;
+        public event Action<IReadOnlyList<ICell>> CellsChanged;
 
         public event Action Destroed;
 
         public int Id => _id;
 
-        public IReadOnlyList<IReadOnlyCell> Cells => _rotations[_angle].Cells;
+        public IReadOnlyList<ICell> Cells => _rotations[_angle].Cells;
 
         public void Rotate(int direction)
         {
@@ -36,7 +36,7 @@ namespace Tetris.Models
             CellsChanged?.Invoke(Cells);
         }
 
-        public IReadOnlyList<IReadOnlyCell> GetRotatedCells(int direction)
+        public IReadOnlyList<ICell> GetRotatedCells(int direction)
         {
             return _rotations[Repeat(_angle + direction, _rotations.Length)].Cells;
         }

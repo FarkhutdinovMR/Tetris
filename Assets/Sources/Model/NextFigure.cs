@@ -18,7 +18,7 @@ namespace Tetris.Models
             _figure = _figures.CreateFigure(Random.Range(0, _figures.Variants.Count));
         }
 
-        public event Action<IReadOnlyList<IReadOnlyCell>> FigureChanged;
+        public event Action<IReadOnlyList<ICell>> FigureChanged;
 
         public Figure GetFigure()
         {

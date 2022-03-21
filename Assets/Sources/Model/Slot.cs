@@ -20,6 +20,7 @@ namespace Tetris.Models
         }
 
         public Figure Figure => _figure;
+
         public int Count => _count;
 
         public Slot Increase(Figure figure)

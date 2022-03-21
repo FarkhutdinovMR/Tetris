@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Tetris.Models
@@ -12,8 +11,9 @@ namespace Tetris.Models
 
         private Figure _figure;
         private FigureInputRouter _inputRouter;
-        private Movement _movement;
+        private MovementInCup _movement;
         private Gravity _gravity;
+        private Transformable _transform;
 
         public FigureSpawner(Cup cup, Level level, NextFigure nextFigure)
         {
@@ -31,13 +31,15 @@ namespace Tetris.Models
             _nextFigure = nextFigure;
         }
 
-        public event Action<Figure, IMovement> FigureSpawned;
+        public event Action<Figure, Transformable> FigureSpawned;
 
         public event Action FigureStopped;
 
         public Figure Figure => _figure;
 
-        public Movement Movement => _movement;
+        public Transformable Transformable => _transform;
+
+        public MovementInCup Movement => _movement;
 
         public void Update(float deltaTime)
         {
@@ -48,7 +50,7 @@ namespace Tetris.Models
                 _inputRouter.Update(deltaTime);
         }
 
-        public void Start()
+        public void Start(int lines)
         {
             if (_inputRouter != null)
                 _inputRouter.OnDisable();
@@ -60,16 +62,16 @@ namespace Tetris.Models
 
         public void Spawn()
         {
-            var position = new Vector2Int(_cup.Width / 2, _cup.Height - 4);
+            var position = new Vector2Int(5, 18);
             _figure = _nextFigure.GetFigure();
 
-            var transform = new Transformable(position);
-            _movement = new Movement(transform, _figure, _cup);
+            _transform = new Transformable(position);
+            _movement = new MovementInCup(_figure, _cup, _transform);
             _gravity = new Gravity(_movement, _level.Value);
-            _inputRouter = new FigureInputRouter(_gravity);
+            _inputRouter = new FigureInputRouter(_gravity, _movement);
 
             _inputRouter.OnEnable();
-            FigureSpawned?.Invoke(_figure, _movement);
+            FigureSpawned?.Invoke(_figure, _transform);
         }
     }
 }

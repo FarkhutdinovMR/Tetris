@@ -256,7 +256,7 @@ Canvas:
   m_GameObject: {fileID: 227710454}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1784,7 +1784,6 @@ GameObject:
   - component: {fileID: 1896087711}
   - component: {fileID: 1896087705}
   - component: {fileID: 1896087708}
-  - component: {fileID: 1896087713}
   - component: {fileID: 1896087706}
   - component: {fileID: 1896087714}
   - component: {fileID: 1896087709}
@@ -1827,7 +1826,6 @@ MonoBehaviour:
   - {fileID: 1896087702}
   - {fileID: 1896087711}
   - {fileID: 1896087705}
-  - {fileID: 1896087713}
   - {fileID: 1896087708}
 --- !u!4 &1896087704
 Transform:
@@ -1919,7 +1917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statisticsCompositeRoot: {fileID: 1896087702}
   _levelView: {fileID: 916283606}
-  _lineToLevelUp: 1
+  _lineToLevelUp: 5
 --- !u!114 &1896087712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1934,23 +1932,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 1941384037}
   _cupView: {fileID: 1941384036}
+  _gameOverWindow: {fileID: 1054339697}
   _width: 10
   _height: 22
---- !u!114 &1896087713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1896087701}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32de59602ea6d1f43a1739c8b7df62dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cupCompositeRoot: {fileID: 1896087712}
-  _gameOverWindow: {fileID: 1054339697}
-  _maxPosition: 17
 --- !u!114 &1896087714
 MonoBehaviour:
   m_ObjectHideFlags: 0

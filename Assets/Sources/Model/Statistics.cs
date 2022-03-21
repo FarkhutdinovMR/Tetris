@@ -26,6 +26,9 @@ namespace Tetris.Models
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            if (_costsPerLevels.ContainsKey(count) == false)
+                return;
+
             _score += _costsPerLevels[count];
             _line += count;
 
