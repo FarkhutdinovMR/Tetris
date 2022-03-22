@@ -1857,6 +1857,7 @@ MonoBehaviour:
   _levelCompositeRoot: {fileID: 1896087711}
   _figuresViewFactory: {fileID: 1896087706}
   _nextFigureView: {fileID: 1370916161}
+  _gameOverWindow: {fileID: 1054339697}
 --- !u!114 &1896087706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1917,7 +1918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statisticsCompositeRoot: {fileID: 1896087702}
   _levelView: {fileID: 916283606}
-  _lineToLevelUp: 5
+  _lineToLevelUp: 10
 --- !u!114 &1896087712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1932,7 +1933,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 1941384037}
   _cupView: {fileID: 1941384036}
-  _gameOverWindow: {fileID: 1054339697}
   _width: 10
   _height: 22
 --- !u!114 &1896087714

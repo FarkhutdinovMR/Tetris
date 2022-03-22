@@ -7,7 +7,6 @@ namespace CompositeRoot
     {
         [SerializeField] private CellsView _view;
         [SerializeField] private CupView _cupView;
-        [SerializeField] private GameObject _gameOverWindow;
         [SerializeField] private int _width;
         [SerializeField] private int _height;
 
@@ -36,31 +35,18 @@ namespace CompositeRoot
         private void OnEnable()
         {
             _cup.CellsChanged += _view.Create;
-           // _cup.AddCellFailed += OnAddCellFailed;
             _cup.CellsChanged += _lines.Upadate;
         }
 
         private void OnDisable()
         {
             _cup.CellsChanged -= _view.Create;
-           // _cup.AddCellFailed -= OnAddCellFailed;
             _cup.CellsChanged -= _lines.Upadate;
         }
 
         private void Update()
         {
             _lines.Update(Time.deltaTime);
-        }
-
-        private void OnAddCellFailed()
-        {
-            GameOver();
-        }
-
-        private void GameOver()
-        {
-            _gameOverWindow.SetActive(true);
-            Time.timeScale = 0;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Tetris.Models
         private readonly Figure _figure;
         private readonly Cup _cup;
 
-        private bool _isActive = true;
+        private bool _isStopped;
 
         public MovementInCup(Figure figure, Cup cup, Transformable transform)
         {
@@ -25,11 +25,13 @@ namespace Tetris.Models
             _transform = transform;
         }
 
+        public event Action DontMoved;
+
         public bool IsGrounded(Vector2Int direction) => direction == Vector2Int.down;
 
         public void Move(Vector2Int direction)
         {
-            if (_isActive == false)
+            if (_isStopped)
                 return;
 
             if (_cup.IsCollision(LocalToWorld(_figure.Cells, _transform.Position + direction)) == false)
@@ -38,15 +40,23 @@ namespace Tetris.Models
             }
             else if (IsGrounded(direction))
             {
-                _cup.AddCells(LocalToWorld(_figure.Cells, _transform.Position));
-                _figure.Destroy();
-                _isActive = false;
+                if (_cup.IsCollision(LocalToWorld(_figure.Cells, _transform.Position)))
+                {
+                    DontMoved?.Invoke();
+                }
+                else
+                {
+                    _cup.AddCells(LocalToWorld(_figure.Cells, _transform.Position));
+                    _figure.Destroy();
+                }
+
+                _isStopped = true;
             }
         }
 
         public void Rotate(int direction)
         {
-            if (_isActive == false)
+            if (_isStopped)
                 return;
 
             if (_cup.IsCollision(LocalToWorld(_figure.GetRotatedCells(direction), _transform.Position)) == false)

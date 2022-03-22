@@ -10,6 +10,7 @@ namespace CompositeRoot
         [SerializeField] private LevelCompositeRoot _levelCompositeRoot;
         [SerializeField] private FiguresTransformableView _figuresViewFactory;
         [SerializeField] private CellsView _nextFigureView;
+        [SerializeField] private GameObject _gameOverWindow;
 
         private Figures _figures;
         private FigureSpawner _figureSpawner;
@@ -57,6 +58,7 @@ namespace CompositeRoot
             _figuresViewFactory.Create(figure, transformable);
             _figureSpawner.Figure.CellsChanged += OnCellsChanged;
             _figureSpawner.Figure.Destroed += _figuresViewFactory.Destroy;
+            _figureSpawner.Movement.DontMoved += OnDontMoved;
         }
 
         private void OnFigureStoped()
@@ -66,11 +68,23 @@ namespace CompositeRoot
 
             _figureSpawner.Figure.CellsChanged -= OnCellsChanged;
             _figureSpawner.Figure.Destroed -= _figuresViewFactory.Destroy;
+            _figureSpawner.Movement.DontMoved -= OnDontMoved;
         }
 
         private void OnCellsChanged(IReadOnlyList<ICell> cells)
         {
             _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Transformable);
+        }
+
+        private void OnDontMoved()
+        {
+            GameOver();
+        }
+
+        private void GameOver()
+        {
+            _gameOverWindow.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 }

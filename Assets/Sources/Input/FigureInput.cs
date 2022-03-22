@@ -33,6 +33,22 @@ public class @FigureInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""HorizontalMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""85f8df02-32ee-4ca7-aff7-8c645acdc97d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""VerticalMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""e03b06ac-a9e2-4ce7-b87d-776fa75f037c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -189,6 +205,72 @@ public class @FigureInput : IInputActionCollection, IDisposable
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""200e772d-6533-444e-88b0-3a8515276e5e"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""134731f6-7705-4b5a-b03c-f72e7d8cea0a"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""0397116b-8ecc-49dc-b6ee-9b46cb0f3ae1"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""63de01b6-cf8f-43ba-8454-c417780e253a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""a4cb69dd-072c-4bb7-923f-8ad2f6f26992"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""6746fc88-6458-4fec-842d-3b8d3376dc28"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -199,6 +281,8 @@ public class @FigureInput : IInputActionCollection, IDisposable
         m_Figure = asset.FindActionMap("Figure", throwIfNotFound: true);
         m_Figure_Move = m_Figure.FindAction("Move", throwIfNotFound: true);
         m_Figure_Rotate = m_Figure.FindAction("Rotate", throwIfNotFound: true);
+        m_Figure_HorizontalMove = m_Figure.FindAction("HorizontalMove", throwIfNotFound: true);
+        m_Figure_VerticalMove = m_Figure.FindAction("VerticalMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -250,12 +334,16 @@ public class @FigureInput : IInputActionCollection, IDisposable
     private IFigureActions m_FigureActionsCallbackInterface;
     private readonly InputAction m_Figure_Move;
     private readonly InputAction m_Figure_Rotate;
+    private readonly InputAction m_Figure_HorizontalMove;
+    private readonly InputAction m_Figure_VerticalMove;
     public struct FigureActions
     {
         private @FigureInput m_Wrapper;
         public FigureActions(@FigureInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Figure_Move;
         public InputAction @Rotate => m_Wrapper.m_Figure_Rotate;
+        public InputAction @HorizontalMove => m_Wrapper.m_Figure_HorizontalMove;
+        public InputAction @VerticalMove => m_Wrapper.m_Figure_VerticalMove;
         public InputActionMap Get() { return m_Wrapper.m_Figure; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -271,6 +359,12 @@ public class @FigureInput : IInputActionCollection, IDisposable
                 @Rotate.started -= m_Wrapper.m_FigureActionsCallbackInterface.OnRotate;
                 @Rotate.performed -= m_Wrapper.m_FigureActionsCallbackInterface.OnRotate;
                 @Rotate.canceled -= m_Wrapper.m_FigureActionsCallbackInterface.OnRotate;
+                @HorizontalMove.started -= m_Wrapper.m_FigureActionsCallbackInterface.OnHorizontalMove;
+                @HorizontalMove.performed -= m_Wrapper.m_FigureActionsCallbackInterface.OnHorizontalMove;
+                @HorizontalMove.canceled -= m_Wrapper.m_FigureActionsCallbackInterface.OnHorizontalMove;
+                @VerticalMove.started -= m_Wrapper.m_FigureActionsCallbackInterface.OnVerticalMove;
+                @VerticalMove.performed -= m_Wrapper.m_FigureActionsCallbackInterface.OnVerticalMove;
+                @VerticalMove.canceled -= m_Wrapper.m_FigureActionsCallbackInterface.OnVerticalMove;
             }
             m_Wrapper.m_FigureActionsCallbackInterface = instance;
             if (instance != null)
@@ -281,6 +375,12 @@ public class @FigureInput : IInputActionCollection, IDisposable
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
+                @HorizontalMove.started += instance.OnHorizontalMove;
+                @HorizontalMove.performed += instance.OnHorizontalMove;
+                @HorizontalMove.canceled += instance.OnHorizontalMove;
+                @VerticalMove.started += instance.OnVerticalMove;
+                @VerticalMove.performed += instance.OnVerticalMove;
+                @VerticalMove.canceled += instance.OnVerticalMove;
             }
         }
     }
@@ -289,5 +389,7 @@ public class @FigureInput : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnHorizontalMove(InputAction.CallbackContext context);
+        void OnVerticalMove(InputAction.CallbackContext context);
     }
 }

@@ -42,11 +42,11 @@ namespace Tetris.Models
 
             if (_lines.Count() == Tetris)
             {
-                _linesRemover = new BlinkLinesRemover(_cup, OnLineRemoved);
+                _linesRemover = new BlinkLinesRemover(_cup, OnLineRemoved, 0.05f, 6);
             }
             else if (_lines.Count() > 0)
             {
-                _linesRemover = new AnimationLinesRemover(_cup, OnLineRemoved);
+                _linesRemover = new AnimationLinesRemover(_cup, OnLineRemoved, 0.1f, _cup.Size.Width / 2);
             }
             else
             {
