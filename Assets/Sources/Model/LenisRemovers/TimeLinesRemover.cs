@@ -10,10 +10,11 @@ namespace Tetris.Models
         private readonly float _speed;
         private readonly int _repeat;
 
-        protected Cup Cup { get; private set; }
-        protected List<ICell> RemovingCells = new List<ICell>();
-
         private Timer _timer;
+
+        protected Cup Cup { get; private set; }
+
+        protected List<ICell> RemovingCells = new List<ICell>();
 
         public TimeLinesRemover(Cup cup, Action onEnd, float speed, int repeat)
         {

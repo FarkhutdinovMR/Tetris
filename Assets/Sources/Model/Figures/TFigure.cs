@@ -9,39 +9,39 @@ namespace Tetris.Models
         {
             var color = Color.white;
 
-            Rotation rotation_1 = new Rotation(new List<Pixel>
+            Shape rotation_1 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 0), color),
                 new Pixel(new Vector2Int(-1, 1), color),
                 new Pixel(new Vector2Int(0, 1), color),
-                new Pixel(new Vector2Int(1, 1), color)
+                new Pixel(new Vector2Int(1, 1), color),
             });
 
-            Rotation rotation_2 = new Rotation(new List<Pixel>
+            Shape rotation_2 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 0), color),
                 new Pixel(new Vector2Int(0, 1), color),
                 new Pixel(new Vector2Int(0, 2), color),
-                new Pixel(new Vector2Int(-1, 1), color)
+                new Pixel(new Vector2Int(-1, 1), color),
             });
 
-            Rotation rotation_3 = new Rotation(new List<Pixel>
+            Shape rotation_3 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 2), color),
                 new Pixel(new Vector2Int(-1, 1), color),
                 new Pixel(new Vector2Int(0, 1), color),
-                new Pixel(new Vector2Int(1, 1), color)
+                new Pixel(new Vector2Int(1, 1), color),
             });
 
-            Rotation rotation_4 = new Rotation(new List<Pixel>
+            Shape rotation_4 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 0), color),
                 new Pixel(new Vector2Int(0, 1), color),
                 new Pixel(new Vector2Int(0, 2), color),
-                new Pixel(new Vector2Int(1, 1), color)
+                new Pixel(new Vector2Int(1, 1), color),
             });
 
-            var rotations = new Rotation[] { rotation_1, rotation_2, rotation_3, rotation_4 };
+            var rotations = new Shape[] { rotation_1, rotation_2, rotation_3, rotation_4 };
 
             return new Figure(rotations, 7);
         }

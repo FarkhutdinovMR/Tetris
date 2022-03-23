@@ -71,7 +71,7 @@ namespace CompositeRoot
             _figureSpawner.Movement.DontMoved -= OnDontMoved;
         }
 
-        private void OnCellsChanged(IReadOnlyList<ICell> cells)
+        private void OnCellsChanged(IEnumerable<ICell> cells)
         {
             _figuresViewFactory.Create(_figureSpawner.Figure, _figureSpawner.Transformable);
         }

@@ -61,6 +61,11 @@ namespace Tetris.Models
             return _shape.IsCollision(cells);
         }
 
+        public void Clear()
+        {
+            _shape.Clear();
+        }
+
         public void ChangeCells()
         {
             CellsChanged?.Invoke(Cells);

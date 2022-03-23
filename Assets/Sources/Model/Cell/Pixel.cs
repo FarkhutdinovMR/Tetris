@@ -6,7 +6,8 @@ namespace Tetris.Models
     {
         private Color _color;
 
-        public Pixel(Vector2Int position, Color color) : base(position)
+        public Pixel(Vector2Int position, Color color)
+            : base(position)
         {
             _color = color;
         }

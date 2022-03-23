@@ -78,36 +78,16 @@ namespace Tetris.Models
 
         private void LowerCells()
         {
-            for (int i = 0; i < _lines.Count();)
+            var newCells = new List<ICell>();
+
+            foreach (ICell cell in _cup.Cells)
             {
-                int lineDeleted = CalculateLineInRowAt(_lines, i);
-
-                IEnumerable<ICell> removeCells = _cup.Cells.
-                    Where(cell => cell.Position.y >= _lines[i] + lineDeleted).
-                    OrderBy(cell => cell.Position.y);
-
-                var movedCells = new List<ICell>();
-                foreach (ICell cell in removeCells)
-                    movedCells.Add(cell.Move(new Vector2Int(0, -lineDeleted)));
-
-                _cup.RemoveCells(removeCells);
-                _cup.AddCells(movedCells);
-
-                i += lineDeleted;
-            }
-        }
-
-        private int CalculateLineInRowAt(int[] lines, int start)
-        {
-            int count = 1;
-
-            for (int i = start; i < lines.Length - 1; i++)
-            {
-                if (lines[i + 1] - lines[i] == 1)
-                    count++;
+                int offset = _lines.Count(line => line < cell.Position.y);
+                newCells.Add(cell.Move(new Vector2Int(0, -offset)));
             }
 
-            return count;
+            _cup.Clear();
+            _cup.AddCells(newCells);
         }
     }
 }

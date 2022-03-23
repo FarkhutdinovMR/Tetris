@@ -6,7 +6,6 @@ namespace CompositeRoot
     public class CupCompositeRoot : CompositeRoot
     {
         [SerializeField] private CellsView _view;
-        [SerializeField] private CupView _cupView;
         [SerializeField] private int _width;
         [SerializeField] private int _height;
 
@@ -23,7 +22,6 @@ namespace CompositeRoot
             _cup = new Cup(shape, new Size(_width, _height));
             _lines = new Lines(_cup);
             _view.Create(shape.Cells);
-            _cupView.BuildWalls(_width, _height);
         }
 
         private void OnValidate()

@@ -5,11 +5,11 @@ namespace Tetris.Models
 {
     public class Figure
     {
-        private readonly Rotation[] _rotations;
+        private readonly Shape[] _rotations;
         private readonly int _id;
         private int _angle;
 
-        public Figure(Rotation[] rotations, int id)
+        public Figure(Shape[] rotations, int id)
         {
             if (rotations == null)
                 throw new ArgumentNullException(nameof(rotations));
@@ -18,13 +18,13 @@ namespace Tetris.Models
             _id = id;
         }
 
-        public event Action<IReadOnlyList<ICell>> CellsChanged;
+        public event Action<IEnumerable<ICell>> CellsChanged;
 
         public event Action Destroed;
 
         public int Id => _id;
 
-        public IReadOnlyList<ICell> Cells => _rotations[_angle].Cells;
+        public IEnumerable<ICell> Cells => _rotations[_angle].Cells;
 
         public void Rotate(int direction)
         {
@@ -36,7 +36,7 @@ namespace Tetris.Models
             CellsChanged?.Invoke(Cells);
         }
 
-        public IReadOnlyList<ICell> GetRotatedCells(int direction)
+        public IEnumerable<ICell> GetRotatedCells(int direction)
         {
             return _rotations[Repeat(_angle + direction, _rotations.Length)].Cells;
         }
