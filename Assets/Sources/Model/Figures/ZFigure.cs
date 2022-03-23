@@ -3,29 +3,29 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    class ZFigure : IFigureFactory
+    public class ZFigure : IFigureFactory
     {
         public Figure Create()
         {
             var color = Color.gray;
 
-            Rotation rotation_1 = new Rotation(new List<Pixel>
+            Shape rotation_1 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 0), color),
                 new Pixel(new Vector2Int(1, 0), color),
                 new Pixel(new Vector2Int(-1, 1), color),
-                new Pixel(new Vector2Int(0, 1), color)
+                new Pixel(new Vector2Int(0, 1), color),
             });
 
-            Rotation rotation_2 = new Rotation(new List<Pixel>
+            Shape rotation_2 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(0, 0), color),
                 new Pixel(new Vector2Int(0, 1), color),
                 new Pixel(new Vector2Int(1, 1), color),
-                new Pixel(new Vector2Int(1, 2), color)
+                new Pixel(new Vector2Int(1, 2), color),
             });
 
-            var rotations = new Rotation[] { rotation_1, rotation_2 };
+            var rotations = new Shape[] { rotation_1, rotation_2 };
 
             return new Figure(rotations, 5);
         }

@@ -8,7 +8,10 @@ namespace Tetris.Models
     {
         private int _offset;
 
-        public AnimationLinesRemover(Cup cup, Action onEnd, float speed, int repeat) : base(cup, onEnd, speed, repeat) { }
+        public AnimationLinesRemover(Cup cup, Action onEnd, float speed, int repeat)
+            : base(cup, onEnd, speed, repeat)
+        {
+        }
 
         public int LineCenter => Cup.Size.Width / 2;
 

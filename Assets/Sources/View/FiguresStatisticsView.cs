@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FiguresStatisticsView : MonoBehaviour
 {
+    private readonly List<TextView> _textViews = new List<TextView>();
+
     [SerializeField] private CellsViewFactory _cellsViewFactory;
     [SerializeField] private Transform _figureContainer;
     [SerializeField] private TextView _textTemplate;
@@ -11,7 +13,6 @@ public class FiguresStatisticsView : MonoBehaviour
     [SerializeField] private Transform _textContainer;
     [SerializeField] private float _space;
 
-    private readonly List<TextView> _textViews = new List<TextView>();
     private float _verticalOffset;
 
     public void Render(IEnumerable<Slot> figures)

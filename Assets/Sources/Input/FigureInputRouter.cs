@@ -1,9 +1,9 @@
 using System;
 using Tetris.Models;
-using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public partial class FigureInputRouter : IMovement, IRotation
+public class FigureInputRouter : IMovement, IRotation
 {
     private readonly FigureInput _figureInput;
     private readonly RepeatTimer _horizontalMoveTimer;

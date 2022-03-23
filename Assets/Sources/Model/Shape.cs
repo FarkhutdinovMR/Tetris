@@ -8,6 +8,13 @@ namespace Tetris.Models
     {
         private readonly List<ICell> _cells = new List<ICell>();
 
+        public Shape() { }
+
+        public Shape(List<ICell> cells)
+        {
+            AddCells(cells);
+        }
+
         public IEnumerable<ICell> Cells => _cells;
 
         public void AddCells(IEnumerable<ICell> cells)
@@ -40,6 +47,11 @@ namespace Tetris.Models
                     return true;
 
             return false;
+        }
+
+        public void Clear()
+        {
+            _cells.Clear();
         }
     }
 }

@@ -7,7 +7,10 @@ namespace Tetris.Models
     {
         private float _color;
 
-        public BlinkLinesRemover(Cup cup, Action onEnd, float speed, int repeat) : base(cup, onEnd, speed, repeat) { }
+        public BlinkLinesRemover(Cup cup, Action onEnd, float speed, int repeat)
+            : base(cup, onEnd, speed, repeat)
+        {
+        }
 
         protected override void OnUpdate()
         {

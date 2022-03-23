@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Tetris.Models
 {
-    class LineFigure : IFigureFactory
+    public class LineFigure : IFigureFactory
     {
         public Figure Create()
         {
             var color = Color.green;
 
-            Rotation rotation_1 = new Rotation(new List<Pixel>
+            Shape rotation_1 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(-2, 1), color),
                 new Pixel(new Vector2Int(-1, 1), color),
@@ -17,7 +17,7 @@ namespace Tetris.Models
                 new Pixel(new Vector2Int(1, 1), color),
             });
 
-            Rotation rotation_2 = new Rotation(new List<Pixel>
+            Shape rotation_2 = new Shape(new List<ICell>
             {
                 new Pixel(new Vector2Int(-1, 0), color),
                 new Pixel(new Vector2Int(-1, 1), color),
@@ -25,7 +25,7 @@ namespace Tetris.Models
                 new Pixel(new Vector2Int(-1, 3), color),
             });
 
-            var rotations = new Rotation[] { rotation_1, rotation_2 };
+            var rotations = new Shape[] { rotation_1, rotation_2 };
 
             return new Figure(rotations, 2);
         }

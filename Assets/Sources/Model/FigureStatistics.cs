@@ -24,7 +24,7 @@ namespace Tetris.Models
 
             if (index == -1)
                 throw new InvalidOperationException();
-            
+
             _variants[index] = _variants[index].Increase(figure);
             Changed?.Invoke(_variants);
         }

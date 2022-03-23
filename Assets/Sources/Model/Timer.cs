@@ -2,7 +2,7 @@
 
 namespace Tetris.Models
 {
-    class Timer
+    public class Timer
     {
         private readonly float _time;
         private readonly int _count;

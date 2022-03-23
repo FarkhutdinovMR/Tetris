@@ -16,9 +16,9 @@ namespace Tetris.Models
             _value = 1;
         }
 
-        public int Value => _value;
-
         public event Action<int> Changed;
+
+        public int Value => _value;
 
         public void Update(int line)
         {

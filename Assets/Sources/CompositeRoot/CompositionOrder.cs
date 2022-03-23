@@ -9,7 +9,7 @@ namespace CompositeRoot
 
         private void OnEnable()
         {
-            foreach(CompositeRoot compositeRoot in _order)
+            foreach (CompositeRoot compositeRoot in _order)
             {
                 compositeRoot.Compose();
                 compositeRoot.enabled = true;
